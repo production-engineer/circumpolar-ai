@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ThawRisk — Permafrost Monitoring ROI</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #0f1f3d;
+    --teal: #0d9488;
+    --teal-light: #ccfbf1;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --green-light: #dcfce7;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-400: #94a3b8;
+    --gray-600: #475569;
+    --gray-800: #1e293b;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--gray-50); color: var(--gray-800); font-size: 14px; line-height: 1.5; }
+
+  header { background: var(--navy); color: white; padding: 28px 40px 24px; border-bottom: 3px solid var(--teal); }
+  header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 4px; }
+  header p { font-size: 13px; color: #94a3b8; max-width: 700px; }
+
+  .layout { display: grid; grid-template-columns: 330px 1fr; gap: 24px; padding: 28px 40px; max-width: 1200px; margin: 0 auto; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; padding: 20px; } header { padding: 20px; } }
+
+  .panel { background: white; border-radius: var(--radius); border: 1px solid var(--gray-200); padding: 22px; }
+  .panel-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-400); margin-bottom: 16px; }
+
+  .preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .preset-btn { padding: 9px 10px; border-radius: 7px; border: 2px solid var(--gray-200); background: white; cursor: pointer; text-align: left; transition: all 0.15s; }
+  .preset-btn:hover { border-color: var(--teal); }
+  .preset-btn.active { border-color: var(--teal); background: var(--teal-light); }
+  .preset-btn .label { font-size: 12px; font-weight: 600; color: var(--gray-800); display: block; }
+  .preset-btn .sublabel { font-size: 11px; color: var(--gray-400); }
+
+  .slider-group { margin-bottom: 16px; }
+  .slider-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+  .slider-label { font-size: 12px; font-weight: 600; color: var(--gray-600); }
+  .slider-value { font-size: 12px; font-weight: 700; color: var(--navy); min-width: 130px; text-align: right; }
+  .slider-sub { font-size: 11px; color: var(--gray-400); margin-bottom: 4px; }
+  input[type="range"] { width: 100%; height: 4px; -webkit-appearance: none; appearance: none; background: var(--gray-200); border-radius: 2px; outline: none; cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 15px; height: 15px; border-radius: 50%; background: var(--teal); border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+  input[type="range"]::-moz-range-thumb { width: 15px; height: 15px; border-radius: 50%; background: var(--teal); border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.2); cursor: pointer; }
+  .divider { border: none; border-top: 1px solid var(--gray-200); margin: 16px 0; }
+
+  .right-col { display: flex; flex-direction: column; gap: 20px; }
+
+  .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .metric-card { border-radius: var(--radius); padding: 14px 16px; border: 1px solid var(--gray-200); }
+  .metric-card.positive { background: var(--green-light); border-color: #86efac; }
+  .metric-card.negative { background: var(--red-light); border-color: #fca5a5; }
+  .metric-card.neutral  { background: var(--teal-light); border-color: #5eead4; }
+  .metric-card.warning  { background: var(--amber-light); border-color: #fcd34d; }
+  .metric-card .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); margin-bottom: 3px; }
+  .metric-card .value { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: var(--navy); }
+  .metric-card .sub { font-size: 11px; color: var(--gray-600); margin-top: 1px; }
+
+  .chart-panel { background: white; border-radius: var(--radius); border: 1px solid var(--gray-200); padding: 20px; }
+  .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3px; }
+  .chart-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .chart-subtitle { font-size: 11px; color: var(--gray-400); margin-bottom: 14px; }
+  .chart-container { position: relative; height: 260px; }
+  .chart-note { font-size: 11px; color: var(--gray-400); margin-top: 8px; text-align: right; }
+
+  .pill { display: inline-block; background: var(--navy); color: white; border-radius: 5px; padding: 2px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .pill.positive { background: #16a34a; }
+  .pill.caution  { background: var(--amber); }
+
+  .assumption-box { background: var(--gray-100); border-radius: 7px; padding: 14px 16px; font-size: 12px; color: var(--gray-600); }
+  .assumption-box strong { color: var(--navy); }
+  .formula { font-family: "SFMono-Regular", Consolas, monospace; font-size: 11px; background: white; border: 1px solid var(--gray-200); border-radius: 5px; padding: 8px 12px; margin-top: 8px; color: var(--gray-800); line-height: 1.8; }
+
+  .sources-section { padding: 24px 40px 8px; max-width: 1200px; margin: 0 auto; }
+  .sources-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-400); margin-bottom: 12px; }
+  .sources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px; }
+  .source-item { background: white; border: 1px solid var(--gray-200); border-radius: 7px; padding: 10px 12px; font-size: 11px; }
+  .source-tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; background: var(--teal-light); color: #0f766e; }
+  .source-name { font-weight: 600; color: var(--navy); }
+  .source-desc { color: var(--gray-600); margin-top: 1px; }
+
+  footer { text-align: center; padding: 16px 40px 28px; font-size: 11px; color: var(--gray-400); border-top: 1px solid var(--gray-200); max-width: 1200px; margin: 0 auto; }
+  footer a { color: var(--teal); text-decoration: none; }
+
+  .pricing-box { background: var(--gray-100); border-radius: 7px; padding: 12px 14px; }
+  .pricing-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; padding: 3px 0; }
+  .pricing-row span:first-child { color: var(--gray-600); }
+  .pricing-val { font-weight: 700; color: var(--navy); }
+  .pricing-note { font-size: 11px; color: var(--gray-400); margin-top: 6px; }
+
+  .cta-btn { display: block; width: 100%; margin-top: 14px; background: var(--teal); color: white; border: none; border-radius: 10px; padding: 13px 22px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 3px 12px rgba(13,148,136,0.25); transition: background 0.15s, transform 0.1s; text-align: center; }
+  .cta-btn:hover { background: #0f766e; transform: translateY(-1px); }
+
+  .toggle-group { margin-bottom: 16px; }
+  .toggle-label { display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 3px; }
+  .toggle-label input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--teal); cursor: pointer; flex-shrink: 0; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,31,61,0.55); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 14px; padding: 36px 32px 28px; width: 100%; max-width: 400px; margin: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); position: relative; }
+  .modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 18px; color: var(--gray-400); cursor: pointer; line-height: 1; }
+  .modal-close:hover { color: var(--gray-800); }
+  .modal h2 { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+  .modal p { font-size: 13px; color: var(--gray-600); margin-bottom: 22px; }
+  .form-field { margin-bottom: 14px; }
+  .form-field label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-600); margin-bottom: 5px; }
+  .form-field input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--gray-200); border-radius: 7px; font-size: 14px; color: var(--gray-800); outline: none; transition: border-color 0.15s; }
+  .form-field input:focus { border-color: var(--teal); }
+  .form-submit { width: 100%; padding: 12px; background: var(--teal); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 6px; transition: background 0.15s; }
+  .form-submit:hover { background: #0f766e; }
+  .form-fine { font-size: 11px; color: var(--gray-400); text-align: center; margin-top: 12px; }
+  .modal-success { display: none; text-align: center; padding: 16px 0 8px; }
+  .modal-success .check { font-size: 40px; margin-bottom: 12px; }
+  .modal-success h3 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+  .modal-success p { font-size: 13px; color: var(--gray-600); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ThawRisk — Permafrost Monitoring ROI Calculator</h1>
+  <p>Models the financial value of early permafrost detection using a Monte Carlo simulation.
+     Each run simulates 500 independent futures — damage events are discrete shocks, not smooth averages.
+     The risk distribution shows the full range of outcomes so you can see both the typical case and the tail risk.</p>
+</header>
+
+<div class="layout">
+
+  <!-- LEFT: Controls -->
+  <div>
+    <div class="panel">
+      <div class="panel-title">Asset Profile</div>
+      <div class="preset-grid">
+        <button class="preset-btn active" onclick="applyPreset('commercial')" id="btn-commercial">
+          <span class="label">Commercial Building</span><span class="sublabel">$2M asset</span>
+        </button>
+        <button class="preset-btn" onclick="applyPreset('facility')" id="btn-facility">
+          <span class="label">Community Facility</span><span class="sublabel">School, clinic, hall</span>
+        </button>
+        <button class="preset-btn" onclick="applyPreset('powerplant')" id="btn-powerplant">
+          <span class="label">Powerplant / Utility</span><span class="sublabel">Critical infrastructure</span>
+        </button>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Asset Replacement Value</span>
+          <span class="slider-value" id="val-asset">$2.0M</span>
+        </div>
+        <div class="slider-sub">Full cost to replace the structure</div>
+        <input type="range" id="sl-asset" min="0" max="50000000" step="100000" value="2000000" oninput="update()">
+      </div>
+
+
+      <hr class="divider">
+      <div class="panel-title">Permafrost Risk Parameters</div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Annual Event Probability</span>
+          <span class="slider-value" id="val-prob">4.0% / yr</span>
+        </div>
+        <div class="slider-sub">Per building. Norilsk empirical: ~3–5%/yr. IPCC high-emissions pushes 8–10% post-2040.</div>
+        <input type="range" id="sl-prob" min="0" max="0.15" step="0.005" value="0.04" oninput="update()">
+      </div>
+
+      <div class="toggle-group">
+        <label class="toggle-label">
+          <input type="checkbox" id="chk-onetime" onchange="update()">
+          <span class="slider-label">One-time event</span>
+        </label>
+        <div class="slider-sub">Once mitigation is applied the risk is resolved — damage can't recur. Uncheck for ongoing annual risk.</div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Reactive Repair Cost</span>
+          <span class="slider-value" id="val-reactive-pct">17.5% = $350k</span>
+        </div>
+        <div class="slider-sub">% of asset value. Post-failure repair: structural, drainage, utilities.</div>
+        <input type="range" id="sl-reactive-pct" min="0" max="0.75" step="0.025" value="0.175" oninput="update()">
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Preventive Intervention Cost</span>
+          <span class="slider-value" id="val-preventive">$55k</span>
+        </div>
+        <div class="slider-sub">When ThawRisk fires an early alert — thermosyphons, drainage, pre-failure reinforcement.</div>
+        <input type="range" id="sl-preventive" min="0" max="500000" step="5000" value="55000" oninput="update()">
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Analysis Horizon</span>
+          <span class="slider-value" id="val-horizon">30 years</span>
+        </div>
+        <input type="range" id="sl-horizon" min="0" max="30" step="1" value="30" oninput="update()">
+      </div>
+
+      <hr class="divider">
+      <div class="panel-title">ThawRisk Pricing</div>
+      <div class="pricing-box">
+        <div class="pricing-row"><span>Year 1</span><span class="pricing-val">$10,000</span></div>
+        <div class="pricing-row"><span>Annual renewal</span><span class="pricing-val">$7,500 / yr</span></div>
+        <div class="pricing-note">All-in: install, hardware rental, data transfer &amp; automated analysis</div>
+      </div>
+      <button class="cta-btn" onclick="openModal()">Get Early Access</button>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: Output -->
+  <div class="right-col">
+
+    <div class="metric-row">
+      <div class="metric-card negative">
+        <div class="label">Avg. Yearly Damage (No Monitoring)</div>
+        <div class="value" id="m-eal">—</div>
+        <div class="sub">Expected repair cost per year</div>
+      </div>
+      <div class="metric-card positive">
+        <div class="label">Avg. Yearly Savings</div>
+        <div class="value" id="m-benefit">—</div>
+        <div class="sub">What ThawRisk saves per year</div>
+      </div>
+      <div class="metric-card neutral">
+        <div class="label">Break-Even</div>
+        <div class="value" id="m-breakeven">—</div>
+        <div class="sub">When savings cover setup cost</div>
+      </div>
+    </div>
+
+    <!-- Chart 1: Average annual savings across 10 model runs -->
+    <div class="chart-panel">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Cumulative Savings vs. No Monitoring</div>
+          <div class="chart-subtitle">Average of 500 simulated futures. Damage events hit as one-time shocks. Above zero = ThawRisk is ahead.</div>
+        </div>
+        <span class="pill" id="be-pill">—</span>
+      </div>
+      <div class="chart-container" style="height:280px">
+        <canvas id="jcurve"></canvas>
+      </div>
+      <div class="chart-note">Mean cumulative savings across 500 simulated futures. Fluctuations reflect random timing of damage events.</div>
+    </div>
+
+    <!-- Chart 2: Risk distribution -->
+    <div class="chart-panel">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Risk Distribution — <span id="scurve-title-period">30</span>-Year Average Annual Loss</div>
+          <div class="chart-subtitle">Read: "There is an X% chance losses average more than $Y per year over <span id="scurve-subtitle-period">30 years</span>." ThawRisk shifts costs left.</div>
+        </div>
+        <span class="pill caution" id="tail-reduction-pill">—</span>
+      </div>
+      <div class="chart-container">
+        <canvas id="scurve"></canvas>
+      </div>
+      <div class="chart-note">A curve shifted left means lower typical costs. A steeper curve means more predictable costs.</div>
+    </div>
+
+    <!-- Methodology (collapsed) -->
+    <div class="panel">
+      <details>
+        <summary style="cursor:pointer;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--gray-400);list-style:none;display:flex;align-items:center;gap:6px;">
+          <span>▶</span> How this works
+        </summary>
+        <div class="assumption-box" style="margin-top:14px">
+          <strong>Scenario simulation:</strong> We run 500 simulated futures. In each year of each scenario, a random draw determines whether a damage event occurs — it's binary, either it happens or it doesn't, based on the annual chance you set. If it does, the unmonitored building pays the full repair cost; the ThawRisk building pays the smaller early-intervention cost instead. Cumulative savings = total unmonitored cost − total ThawRisk cost to date. The <strong>savings chart</strong> shows the mean cumulative savings across all scenarios. The <strong>risk distribution</strong> shows the full range of average annual costs — a tool insurers and lenders use to price risk.
+          <div class="formula">
+Each scenario, each year:<br>
+  damage_event = yes/no at probability p<br>
+  unmonitored cost += damage_event × repair_cost<br>
+  ThawRisk cost    += annual_fee + damage_event × intervention_cost<br>
+<br>
+Cumulative savings(yr) = unmonitored cost − ThawRisk cost<br>
+Risk chart: sort final avg. annual costs → % chance of exceeding each value
+          </div>
+          <br>
+          <strong>Assumptions:</strong> In recurring mode, damage events are independent year to year. In one-time mode, once an event fires and mitigation is applied, no further events occur — the risk is resolved. ThawRisk catches events early enough to use the lower intervention cost. No inflation adjustment applied.
+          <br><br>
+          <strong>Not included:</strong> lost revenue during repairs, insurance savings, and the risk of damage going undetected for multiple years (which makes costs compound). All of these make ThawRisk look better than shown.
+        </div>
+      </details>
+    </div>
+
+  </div>
+</div>
+
+<div class="sources-section">
+  <div class="sources-title">Data Sources</div>
+  <div class="sources-grid">
+    <div class="source-item">
+      <span class="source-tag">Probability</span>
+      <div class="source-name">Hjort et al. (2018) — Nature Communications</div>
+      <div class="source-desc">~70% of current Arctic infrastructure in high-thaw-potential zones by mid-century. Basis for probability range.</div>
+    </div>
+    <div class="source-item">
+      <span class="source-tag">Probability</span>
+      <div class="source-name">Streletskiy et al. (2019) — The Cryosphere</div>
+      <div class="source-desc">Norilsk: 60% of buildings damaged over ~30 years → implied ~2–3%/yr rate used as lower bound default.</div>
+    </div>
+    <div class="source-item">
+      <span class="source-tag">Repair Costs</span>
+      <div class="source-name">Melvin et al. (2017) — Nature Climate Change</div>
+      <div class="source-desc">Alaska permafrost infrastructure costs; projected to double under medium/high emission scenarios.</div>
+    </div>
+    <div class="source-item">
+      <span class="source-tag">Repair Costs</span>
+      <div class="source-name">Shiklomanov et al. (2017) — Cold Regions Science</div>
+      <div class="source-desc">Norilsk: $1.6–2.1B cumulative 2015–2099. Per-building reactive repair range $100k–600k.</div>
+    </div>
+    <div class="source-item">
+      <span class="source-tag">Macroeconomics</span>
+      <div class="source-name">Yumashev et al. (2019) — Nature Climate Change</div>
+      <div class="source-desc">Pan-Arctic infrastructure repair ~€30B by 2060 from bearing capacity loss.</div>
+    </div>
+    <div class="source-item">
+      <span class="source-tag">Preventive Costs</span>
+      <div class="source-name">USACE / CRREL Cold Regions Research</div>
+      <div class="source-desc">Thermosyphon and pre-failure remediation: $20–100k early vs. $100–500k+ reactive.</div>
+    </div>
+    <div class="source-item">
+      <span class="source-tag">Climate Projections</span>
+      <div class="source-name">IPCC AR6 — Chapter 9 (Cryosphere)</div>
+      <div class="source-desc">Permafrost decline under SSP1–2.6 and SSP5–8.5. High-emissions substantially increases event probability post-2030.</div>
+    </div>
+    <div class="source-item">
+      <span class="source-tag">Sensor Data</span>
+      <div class="source-name">Beadedstream Vertical Temperature Arrays</div>
+      <div class="source-desc">40-sensor probes at 10 cm spacing — continuous active layer depth tracking and freeze-thaw front detection.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Sign-up modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeOnBackdrop(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-form-state">
+      <h2>Join the ThawRisk list</h2>
+      <p>Leave your details and we'll be in touch about early access and pilot pricing.</p>
+      <form id="signup-form" onsubmit="submitForm(event)">
+        <div class="form-field">
+          <label for="f-email">Email</label>
+          <input type="email" id="f-email" name="email" placeholder="you@company.com" required autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label for="f-phone">Phone <span style="font-weight:400;color:var(--gray-400)">(optional)</span></label>
+          <input type="tel" id="f-phone" name="phone" placeholder="+1 867 555 0100" autocomplete="tel">
+        </div>
+        <button type="submit" class="form-submit">Count me in</button>
+      </form>
+      <div class="form-fine">No spam. Unsubscribe any time.</div>
+    </div>
+    <div class="modal-success" id="modal-success">
+      <div class="check">✓</div>
+      <h3>You're on the list</h3>
+      <p>We'll reach out as ThawRisk moves toward pilot. Watch your inbox.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  ThawRisk is a product of <strong>Beadedcloud</strong>.
+  Project plan: <a href="https://github.com/production-engineer/repos/blob/main/thawrisk/docs/project-plan.md">github.com/production-engineer/repos — thawrisk/docs/project-plan.md</a>
+  &nbsp;|&nbsp;
+  Figures are estimates from published research. Engage a licensed geotechnical engineer for site-specific assessment.
+</footer>
+
+<script>
+  // Fixed ThawRisk costs (not user-adjustable)
+  const YEAR1   = 10000;  // first-year price (onboarding + monitoring)
+  const RENEWAL = 7500;   // annual renewal from year 2 onward
+
+  const PRESETS = {
+    commercial: { asset: 2000000,  prob: 0.04, reactivePct: 0.175, preventive: 55000,  horizon: 30 },
+    facility:   { asset: 4000000,  prob: 0.05, reactivePct: 0.175, preventive: 90000,  horizon: 30 },
+    powerplant: { asset: 18000000, prob: 0.04, reactivePct: 0.14,  preventive: 200000, horizon: 30 },
+  };
+
+  function applyPreset(key) {
+    const p = PRESETS[key];
+    document.getElementById('sl-asset').value        = p.asset;
+    document.getElementById('sl-prob').value         = p.prob;
+    document.getElementById('sl-reactive-pct').value = p.reactivePct;
+    document.getElementById('sl-preventive').value   = p.preventive;
+    document.getElementById('sl-horizon').value      = p.horizon;
+    ['commercial','facility','powerplant'].forEach(k =>
+      document.getElementById('btn-' + k).classList.toggle('active', k === key));
+    update();
+  }
+
+  function fmt(n) {
+    const abs = Math.abs(n), sign = n < 0 ? '-' : '';
+    if (abs >= 1e6)  return sign + '$' + (abs / 1e6).toFixed(1) + 'M';
+    if (abs >= 1000) return sign + '$' + Math.round(abs / 1000) + 'k';
+    return sign + '$' + Math.round(abs);
+  }
+  function fmtYr(y) {
+    if (!isFinite(y) || y > 30) return '> 30 yrs';
+    if (y <= 0) return 'Immediate';
+    return 'Yr ' + y.toFixed(1);
+  }
+  function pct(arr, p) {
+    const s = [...arr].sort((a, b) => a - b);
+    const i = p * (s.length - 1);
+    return s[Math.floor(i)] + (s[Math.ceil(i)] - s[Math.floor(i)]) * (i - Math.floor(i));
+  }
+
+  const N_SIMS       = 500;
+  const CURVE_POINTS = 120;
+  const SEED         = 20250328; // fixed seed — chart is deterministic across slider changes
+
+  // Seeded PRNG (mulberry32) — same seed always produces the same sequence
+  function makeRng(seed) {
+    let s = seed >>> 0;
+    return () => {
+      s = Math.imul(s ^ s >>> 15, 1 | (s = s + 0x6D2B79F5 | 0));
+      s = s + Math.imul(s ^ s >>> 7, 61 | s) ^ s;
+      return ((s ^ s >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  let jcChart, scChart;
+
+  function openModal() {
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+  function closeOnBackdrop(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  }
+  // Paste your Apps Script Web App URL here after deploying signup-sheet.gs
+  const SIGNUP_ENDPOINT = '';
+
+  function submitForm(e) {
+    e.preventDefault();
+    const btn   = e.target.querySelector('.form-submit');
+    const email = document.getElementById('f-email').value.trim();
+    const phone = document.getElementById('f-phone').value.trim();
+
+    btn.disabled    = true;
+    btn.textContent = 'Sending…';
+
+    const finish = () => {
+      document.getElementById('modal-form-state').style.display = 'none';
+      document.getElementById('modal-success').style.display = 'block';
+    };
+
+    if (!SIGNUP_ENDPOINT) { finish(); return; }
+
+    fetch(SIGNUP_ENDPOINT, {
+      method: 'POST',
+      body: JSON.stringify({ email, phone }),
+    })
+      .then(finish)
+      .catch(finish); // still show success — don't block the user on network errors
+  }
+
+  // Run N_SIMS scenarios with a fixed-seed RNG so the chart never changes on slider moves
+  function runOneBatch(prob, reactive, preventive, horizon, oneTime) {
+    const rng = makeRng(SEED);
+    const cumSavByYear = Array.from({ length: horizon + 1 }, () => []);
+    const unmonFinal = [], trFinal = [];
+
+    for (let s = 0; s < N_SIMS; s++) {
+      let cumUnmon = 0, cumTR = 0, eventFired = false;
+      cumSavByYear[0].push(0);
+
+      for (let t = 1; t <= horizon; t++) {
+        cumTR += (t === 1 ? YEAR1 : RENEWAL);
+        const effectiveProb = (oneTime && eventFired) ? 0 : prob;
+        if (rng() < effectiveProb) {
+          cumUnmon += reactive;
+          cumTR    += preventive;
+          eventFired = true;
+        }
+        cumSavByYear[t].push(cumUnmon - cumTR);
+      }
+      unmonFinal.push(horizon > 0 ? cumUnmon / horizon : 0);
+      trFinal.push(horizon > 0 ? cumTR / horizon : 0);
+    }
+    return { cumSavByYear, unmonFinal, trFinal };
+  }
+
+  function computeBreakEven(prob, reactive, preventive, horizon, oneTime) {
+    if (!oneTime) {
+      const net = prob * reactive - RENEWAL - prob * preventive;
+      return net > 0 ? (YEAR1 - RENEWAL) / net : Infinity;
+    }
+    // One-time: iterate numerically — find first year where expected cumulative savings > 0
+    for (let t = 1; t <= horizon; t++) {
+      const pEvent = 1 - Math.pow(1 - prob, t);
+      const sav = pEvent * (reactive - preventive) - YEAR1 - RENEWAL * (t - 1);
+      if (sav > 0) return t;
+    }
+    return Infinity;
+  }
+
+  function exceedanceCurve(vals) {
+    const sorted = [...vals].sort((a, b) => a - b);
+    const n = sorted.length;
+    const xs = [], ys = [];
+    for (let i = 0; i <= CURVE_POINTS; i++) {
+      const idx = Math.round(i / CURVE_POINTS * (n - 1));
+      xs.push(sorted[idx]);
+      ys.push(Math.round((1 - idx / n) * 100));
+    }
+    return { xs, ys };
+  }
+
+  function update() {
+    const asset       = +document.getElementById('sl-asset').value;
+    const prob        = +document.getElementById('sl-prob').value;
+    const reactivePct = +document.getElementById('sl-reactive-pct').value;
+    const preventive  = +document.getElementById('sl-preventive').value;
+    const horizon     = +document.getElementById('sl-horizon').value;
+    const reactive    = asset * reactivePct;
+
+    document.getElementById('val-asset').textContent        = fmt(asset);
+    document.getElementById('val-prob').textContent         = (prob * 100).toFixed(1) + '% / yr';
+    document.getElementById('val-reactive-pct').textContent = (reactivePct * 100).toFixed(1) + '% = ' + fmt(reactive);
+    document.getElementById('val-preventive').textContent   = fmt(preventive);
+    document.getElementById('val-horizon').textContent      = horizon + ' years';
+    document.getElementById('scurve-title-period').textContent   = horizon;
+    document.getElementById('scurve-subtitle-period').textContent= horizon + ' years';
+
+    const oneTime    = document.getElementById('chk-onetime').checked;
+    const eal        = prob * reactive;
+    const evBE       = computeBreakEven(prob, reactive, preventive, horizon, oneTime);
+
+    const { cumSavByYear, unmonFinal, trFinal } = runOneBatch(prob, reactive, preventive, horizon, oneTime);
+
+    const mean = arr => arr.reduce((s, v) => s + v, 0) / arr.length;
+
+    // S-curve distributions
+    const unmonP90 = pct(unmonFinal, 0.90);
+    const trP90    = pct(trFinal, 0.90);
+
+    // Avg annual savings from simulation (works for both modes)
+    const simAnnualBenefit = horizon > 0 ? mean(cumSavByYear[horizon]) / horizon : 0;
+
+    // Summary cards
+    document.getElementById('m-eal').textContent       = fmt(eal);
+    document.getElementById('m-benefit').textContent   = (simAnnualBenefit >= 0 ? '+' : '') + fmt(simAnnualBenefit);
+    document.getElementById('m-breakeven').textContent = fmtYr(evBE);
+
+    const bePill = document.getElementById('be-pill');
+    bePill.textContent = isFinite(evBE) ? 'Break-even ' + fmtYr(evBE) : 'Break-even beyond horizon';
+    bePill.className   = 'pill' + (isFinite(evBE) ? ' positive' : ' caution');
+
+    const tailReduction = unmonP90 > 0 ? Math.round((1 - trP90 / unmonP90) * 100) : 0;
+    document.getElementById('tail-reduction-pill').textContent = tailReduction + '% lower worst-case loss';
+
+    const labels = Array.from({ length: horizon + 1 }, (_, i) => 'Yr ' + i);
+
+    // --- SAVINGS CHART ---
+
+    const overallMean = Array.from({ length: horizon + 1 }, (_, t) =>
+      Math.round(mean(cumSavByYear[t])));
+
+    const meanDataset = {
+      label: 'Cumulative savings',
+      data: overallMean,
+      borderColor: '#0d9488',
+      backgroundColor: 'transparent',
+      borderWidth: 2.5,
+      pointRadius: 0,
+      tension: 0.2,
+      fill: false,
+    };
+
+    if (jcChart) jcChart.destroy();
+    jcChart = new Chart(document.getElementById('jcurve').getContext('2d'), {
+      type: 'line',
+      data: { labels, datasets: [meanDataset] },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { labels: { font: { size: 12 } } },
+          tooltip: {
+            callbacks: {
+              label: ctx => ' Cumulative savings: ' + fmt(ctx.parsed.y),
+            }
+          }
+        },
+        scales: {
+          y: {
+            ticks: { callback: v => fmt(v), font: { size: 11 } },
+            grid: { color: ctx => ctx.tick.value === 0 ? '#475569' : '#f1f5f9', lineWidth: ctx => ctx.tick.value === 0 ? 1.5 : 1 },
+            title: { display: true, text: 'Cumulative savings vs. no monitoring ($)', font: { size: 11 }, color: '#94a3b8' }
+          },
+          x: { ticks: { font: { size: 11 }, maxTicksLimit: 10 }, grid: { display: false } }
+        }
+      }
+    });
+
+    // --- RISK DISTRIBUTION CHART ---
+    const unmonCurve = exceedanceCurve(unmonFinal);
+    const trCurve    = exceedanceCurve(trFinal);
+
+    if (scChart) scChart.destroy();
+    scChart = new Chart(document.getElementById('scurve').getContext('2d'), {
+      type: 'line',
+      data: {
+        datasets: [
+          {
+            label: 'No monitoring',
+            data: unmonCurve.xs.map((x, i) => ({ x, y: unmonCurve.ys[i] })),
+            borderColor: '#dc2626', backgroundColor: 'rgba(220,38,38,0.06)',
+            borderWidth: 2, pointRadius: 0, tension: 0.4, fill: 'origin',
+          },
+          {
+            label: 'With ThawRisk',
+            data: trCurve.xs.map((x, i) => ({ x, y: trCurve.ys[i] })),
+            borderColor: '#0d9488', backgroundColor: 'rgba(13,148,136,0.08)',
+            borderWidth: 2, pointRadius: 0, tension: 0.4, fill: 'origin',
+          },
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { labels: { font: { size: 12 }, boxWidth: 14 } },
+          tooltip: {
+            callbacks: {
+              title: items => 'Avg. annual loss: ' + fmt(items[0].parsed.x) + '/yr',
+              label: ctx => ' ' + ctx.dataset.label + ': ' + Math.round(ctx.parsed.y) + '% chance of averaging more than this',
+            }
+          }
+        },
+        scales: {
+          x: {
+            type: 'linear',
+            ticks: { callback: v => fmt(v), font: { size: 11 }, maxTicksLimit: 8 },
+            grid: { color: '#f1f5f9' },
+            title: { display: true, text: 'Average annual loss over ' + horizon + '-year period ($/yr)', font: { size: 11 }, color: '#94a3b8' }
+          },
+          y: {
+            min: 0, max: 100,
+            ticks: { callback: v => v + '%', font: { size: 11 } },
+            grid: { color: '#f1f5f9' },
+            title: { display: true, text: '% chance losses average more than this', font: { size: 11 }, color: '#94a3b8' }
+          }
+        }
+      }
+    });
+  }
+
+  update();
+</script>
+</body>
+</html>

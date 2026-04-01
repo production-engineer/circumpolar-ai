@@ -8,6 +8,7 @@ const links = [
   { label: "Industries", href: "/#industries" },
   { label: "Instrumentation", href: "/#instrumentation" },
   { label: "Blog", href: "/blog" },
+  { label: "ROI Calculator", href: "/circumpolar-ai/roi-calculator.html", external: true },
 ];
 
 export default function Nav() {
@@ -43,6 +44,8 @@ export default function Nav() {
             <a
               key={l.href}
               href={l.href}
+              target={l.external ? "_blank" : undefined}
+              rel={l.external ? "noopener noreferrer" : undefined}
               className="text-sm transition-colors"
               style={{ color: "rgba(250,248,245,0.65)" }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "#faf8f5")}
@@ -82,6 +85,8 @@ export default function Nav() {
             <a
               key={l.href}
               href={l.href}
+              target={l.external ? "_blank" : undefined}
+              rel={l.external ? "noopener noreferrer" : undefined}
               className="text-sm py-2 px-3 rounded-xl transition-colors"
               style={{ color: "rgba(250,248,245,0.7)" }}
               onClick={() => setOpen(false)}
