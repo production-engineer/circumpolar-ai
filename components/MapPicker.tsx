@@ -11,8 +11,8 @@ export type PinnedLocation = {
   name?: string;
 };
 
-const CARTO_DARK =
-  "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
+const CARTO_LIGHT =
+  "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
 
 interface MapPickerProps {
   onPin: (location: PinnedLocation) => void;
@@ -22,9 +22,9 @@ export default function MapPicker({ onPin }: MapPickerProps) {
   const [pin, setPin] = useState<PinnedLocation | null>(null);
   const [loading, setLoading] = useState(false);
   const [viewState, setViewState] = useState({
-    longitude: 15,
-    latitude: 74,
-    zoom: 2.5,
+    longitude: -153,
+    latitude: 64,
+    zoom: 4,
   });
 
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -60,7 +60,7 @@ export default function MapPicker({ onPin }: MapPickerProps) {
       <Map
         {...viewState}
         onMove={(e) => setViewState(e.viewState)}
-        mapStyle={CARTO_DARK}
+        mapStyle={CARTO_LIGHT}
         style={{ width: "100%", height: "100%" }}
         onClick={handleClick}
         cursor="crosshair"
