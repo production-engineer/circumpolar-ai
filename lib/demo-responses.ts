@@ -32,14 +32,27 @@ function airTempRange(lat: number): string {
   return "–5°C to –15°C in winter, +12°C to +18°C in summer";
 }
 
-function cellular(lat: number): string {
+function cellular(lat: number, lng: number): string {
+  const ocLink = `https://opencellid.org/#zoom=10&lat=${lat.toFixed(4)}&lon=${lng.toFixed(4)}`;
   if (lat >= 75)
-    return "No terrestrial cellular coverage at this latitude. Iridium Certus (up to 700 kbps) or Starlink (20–200 Mbps where licensed) are the only options. Nearest confirmed GSM towers are 400+ km away.";
+    return `Almost certainly no terrestrial towers within 10 miles. At this latitude, confirmed GSM infrastructure is 400+ km away. Iridium Certus or Starlink are the only reliable options. Verify at OpenCelliD: ${ocLink}`;
   if (lat >= 68)
-    return "Cellular is sparse and limited to within 30–50 km of coastal settlements. Expect coverage gaps of 200+ km inland. Starlink and Iridium are standard fallbacks for any field operation.";
+    return `Unlikely to find towers within 10 miles unless you're near a coastal settlement. Coverage drops to zero within a few km of most communities. Check actual tower locations for these exact coordinates on OpenCelliD: ${ocLink}`;
   if (lat >= 62)
-    return "Patchy LTE coverage within 10–20 km of communities; expect no signal in most wilderness areas. Check OpenCelliD for the nearest tower data. Starlink now covers this latitude reliably.";
-  return "Coverage varies significantly. Urban and road corridors have LTE; wilderness areas may have nothing. Cross-reference with OpenCelliD before planning field ops.";
+    return `Possible but not guaranteed. LTE towers exist near communities but rural areas have large gaps. Check the OpenCelliD map for your exact pin: ${ocLink} — zoom in to see confirmed tower locations and their reported range.`;
+  return `Coverage depends heavily on proximity to roads and settlements. Check OpenCelliD for confirmed tower locations within 10 miles of this pin: ${ocLink}`;
+}
+
+function cellularRadius(lat: number, lng: number, miles: number): string {
+  const km = (miles * 1.609).toFixed(0);
+  const ocLink = `https://opencellid.org/#zoom=11&lat=${lat.toFixed(4)}&lon=${lng.toFixed(4)}`;
+  if (lat >= 75)
+    return `No towers within ${miles} miles (${km} km) at ${lat.toFixed(2)}°N. The nearest confirmed cellular infrastructure is typically 400+ km away at this latitude. Satellite is your only option — Starlink or Iridium Certus. See OpenCelliD: ${ocLink}`;
+  if (lat >= 68)
+    return `Unlikely. At ${lat.toFixed(2)}°N, towers exist only near coastal settlements. A ${miles}-mile radius in wilderness terrain will almost certainly return zero results. Verify on OpenCelliD: ${ocLink} — if there's nothing on that map, there's nothing on the ground.`;
+  if (lat >= 62)
+    return `Possibly. LTE infrastructure exists at this latitude but is concentrated near communities. Open OpenCelliD and check the ${miles}-mile circle around your pin: ${ocLink} — each dot is a registered tower with reported carrier and technology (2G/3G/LTE).`;
+  return `Check OpenCelliD for confirmed towers within ${miles} miles of ${lat.toFixed(3)}°N, ${lng.toFixed(3)}°E: ${ocLink} — zoom to your pin and look for tower dots within the radius you need.`;
 }
 
 function constructionSuitability(lat: number): string {
@@ -73,7 +86,7 @@ const RESPONSES: Record<string, (loc: LocationContext) => string> = {
   "What's the permafrost risk here?": (loc) =>
     `This location sits in ${permafrostZone(loc.lat)}, with a ${activeLayerDepth(loc.lat)} and ground temperatures of ${groundTemp(loc.lat)}. Thaw settlement is the primary infrastructure risk as permafrost warms 0.3–0.7°C per decade in this zone. Any foundation design should account for projected active layer deepening over a 20-year horizon.`,
 
-  "Is there cellular coverage?": (loc) => cellular(loc.lat),
+  "Is there cellular coverage?": (loc) => cellular(loc.lat, loc.lng),
 
   "Current weather conditions?": (loc) =>
     `I don't have real-time access, but MET Norway's Arome Arctic model covers this location — check api.met.no for current data. Typical for the season: ${airTempRange(loc.lat)}, prevailing winds from the northwest at 5–15 m/s, and possible drifting snow reducing visibility below 500m.`,
@@ -93,8 +106,12 @@ export function getDemoResponse(question: string, loc: LocationContext): string 
   const lower = question.toLowerCase();
   if (lower.includes("permafrost") || lower.includes("ground") || lower.includes("freeze") || lower.includes("thaw"))
     return RESPONSES["What's the permafrost risk here?"](loc);
-  if (lower.includes("cell") || lower.includes("coverage") || lower.includes("signal") || lower.includes("starlink") || lower.includes("internet"))
+  if (lower.includes("cell") || lower.includes("coverage") || lower.includes("signal") || lower.includes("starlink") || lower.includes("internet") || lower.includes("tower")) {
+    const milesMatch = lower.match(/(\d+)\s*mile/);
+    const miles = milesMatch ? parseInt(milesMatch[1]) : null;
+    if (miles) return cellularRadius(loc.lat, loc.lng, miles);
     return RESPONSES["Is there cellular coverage?"](loc);
+  }
   if (lower.includes("weather") || lower.includes("temperature") || lower.includes("wind") || lower.includes("snow"))
     return RESPONSES["Current weather conditions?"](loc);
   if (lower.includes("ice") || lower.includes("sea") || lower.includes("navigation") || lower.includes("shipping"))

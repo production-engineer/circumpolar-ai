@@ -52,6 +52,7 @@ export default function Nav() {
               onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(250,248,245,0.65)")}
             >
               {l.label}
+              {l.external && <span style={{ fontSize: "10px", opacity: 0.5 }}>↗</span>}
             </a>
           ))}
         </div>
