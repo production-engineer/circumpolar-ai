@@ -58,6 +58,14 @@ export default function Nav() {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
+          <a
+            href="https://beadedcloud.com/login#circumpolar"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-ghost text-sm py-2 px-5"
+          >
+            Login
+          </a>
           <a href="/#request-access" className="btn-primary text-sm py-2 px-5">
             Get Early Access
           </a>

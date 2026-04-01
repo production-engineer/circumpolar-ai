@@ -17,9 +17,15 @@ import {
   Layers,
   AlertCircle,
   TrendingDown,
+  Vibrate,
+  Wind,
+  Anchor,
+  Droplets,
 } from "lucide-react";
+import Link from "next/link";
 import Nav from "@/components/Nav";
 import HeroMap from "@/components/HeroMap";
+import AccessForm from "@/components/AccessForm";
 import { posts } from "@/lib/blog-posts";
 
 const industries = [
@@ -135,6 +141,34 @@ const sensors = [
     description:
       "Annual FLIR surveys reveal near-surface ice distribution, subsurface voids, and anomalous thaw patches invisible to satellite. Fast, cost-effective ground truth for pre-construction planning.",
     detail: "FLIR Zenmuse · 5cm GSD · repeatable transects",
+  },
+  {
+    icon: <Vibrate size={22} />,
+    name: "Vibration monitoring",
+    description:
+      "Geophone arrays and MEMS accelerometers detect micro-seismic events, blasting impacts, and equipment vibration at sensitive infrastructure. Essential for pipelines, bridges, and buildings near active operations.",
+    detail: "1Hz–1kHz · continuous logging · alert threshold",
+  },
+  {
+    icon: <Wind size={22} />,
+    name: "Weather stations",
+    description:
+      "On-site automatic weather stations measure air temperature, wind speed and direction, precipitation, humidity, and solar radiation. Ground-truth data that corrects model biases in complex Arctic terrain.",
+    detail: "WMO-compliant · solar + battery · LTE/Iridium backhaul",
+  },
+  {
+    icon: <Anchor size={22} />,
+    name: "Water quality buoys",
+    description:
+      "Moored instruments track temperature profiles, dissolved oxygen, turbidity, conductivity, and pH in Arctic lakes, rivers, and coastal waters. Critical for permafrost thaw lake monitoring and baseline assessments.",
+    detail: "Multi-parameter sonde · seasonal deployment",
+  },
+  {
+    icon: <Droplets size={22} />,
+    name: "Radar stream gauging",
+    description:
+      "Non-contact surface velocity radar measures stream flow without in-channel sensors — no ice jamming, no maintenance windows. Provides continuous discharge data through breakup and freeze-up.",
+    detail: "24GHz Doppler · ±1% velocity accuracy · remote access",
   },
 ];
 
@@ -347,7 +381,7 @@ export default function Home() {
               Better data starts on the ground
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base" style={{ color: "rgba(250,248,245,0.55)" }}>
-              Satellite and model data gives you the picture. Site instrumentation gives you certainty. These six sensor types give the best localized ground truth for Arctic assets.
+              Satellite and model data gives you the picture. Site instrumentation gives you certainty. These sensor types deliver the best localized ground truth for Arctic assets.
             </p>
           </div>
 
@@ -387,12 +421,10 @@ export default function Home() {
               </p>
             </div>
             <a
-              href="https://beadedcloud.com"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#request-access"
               className="flex-shrink-0 btn-primary"
             >
-              Try beadedcloud <ArrowRight size={16} />
+              Get early access <ArrowRight size={16} />
             </a>
           </div>
         </div>
@@ -444,18 +476,18 @@ export default function Home() {
                 Arctic intelligence, explained
               </h2>
             </div>
-            <a
+            <Link
               href="/blog"
               className="hidden sm:flex items-center gap-1 text-sm transition-colors"
               style={{ color: "#00c471" }}
             >
               All posts <ArrowRight size={14} />
-            </a>
+            </Link>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {posts.slice(0, 3).map((post) => (
-              <a
+              <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
                 className="card-dark flex flex-col gap-3 group hover:no-underline"
@@ -478,14 +510,14 @@ export default function Home() {
                 <p className="text-xs mt-auto pt-2" style={{ color: "rgba(250,248,245,0.3)" }}>
                   {formatDate(post.date)}
                 </p>
-              </a>
+              </Link>
             ))}
           </div>
 
           <div className="sm:hidden text-center mt-6">
-            <a href="/blog" className="btn-ghost text-sm py-2">
+            <Link href="/blog" className="btn-ghost text-sm py-2">
               All posts <ArrowRight size={14} />
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -501,64 +533,7 @@ export default function Home() {
             We're onboarding a limited cohort of infrastructure developers, underwriters, and researchers. Tell us what you're working on.
           </p>
 
-          <form
-            action="https://formspree.io/f/circumpolar"
-            method="POST"
-            className="flex flex-col gap-3 text-left"
-          >
-            <div className="grid sm:grid-cols-2 gap-3">
-              <input
-                type="text"
-                name="name"
-                placeholder="Your name"
-                required
-                className="rounded-xl px-4 py-3 text-sm outline-none transition-colors"
-                style={{ background: "#fff", border: "1px solid #e3ddd3", color: "#0a121f" }}
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Work email"
-                required
-                className="rounded-xl px-4 py-3 text-sm outline-none transition-colors"
-                style={{ background: "#fff", border: "1px solid #e3ddd3", color: "#0a121f" }}
-              />
-            </div>
-            <input
-              type="text"
-              name="company"
-              placeholder="Company"
-              className="rounded-xl px-4 py-3 text-sm outline-none transition-colors"
-              style={{ background: "#fff", border: "1px solid #e3ddd3", color: "#0a121f" }}
-            />
-            <select
-              name="role"
-              className="rounded-xl px-4 py-3 text-sm outline-none transition-colors"
-              style={{ background: "#fff", border: "1px solid #e3ddd3", color: "rgba(10,18,31,0.6)" }}
-            >
-              <option value="">What best describes you?</option>
-              <option>Infrastructure developer</option>
-              <option>Insurance / Underwriter</option>
-              <option>Shipping / Maritime</option>
-              <option>Researcher / Academia</option>
-              <option>Government / Defense</option>
-              <option>Telecom</option>
-              <option>Other</option>
-            </select>
-            <textarea
-              name="use_case"
-              placeholder="What are you working on? (optional)"
-              rows={3}
-              className="rounded-xl px-4 py-3 text-sm outline-none transition-colors resize-none"
-              style={{ background: "#fff", border: "1px solid #e3ddd3", color: "#0a121f" }}
-            />
-            <button type="submit" className="btn-primary justify-center py-3.5">
-              Request early access <ArrowRight size={16} />
-            </button>
-            <p className="text-xs text-center" style={{ color: "rgba(10,18,31,0.4)" }}>
-              No spam. We'll respond within 48 hours.
-            </p>
-          </form>
+          <AccessForm />
         </div>
       </section>
 
@@ -572,11 +547,11 @@ export default function Home() {
             </span>
           </div>
           <div className="flex items-center gap-6 text-sm" style={{ color: "rgba(250,248,245,0.35)" }}>
-            <a href="/blog" className="hover:text-warm-white transition-colors">Blog</a>
-            <a href="/#industries" className="hover:text-warm-white transition-colors">Industries</a>
-            <a href="/#data-sources" className="hover:text-warm-white transition-colors">Data</a>
+            <Link href="/blog" className="hover:text-warm-white transition-colors">Blog</Link>
+            <Link href="/#industries" className="hover:text-warm-white transition-colors">Industries</Link>
+            <Link href="/#data-sources" className="hover:text-warm-white transition-colors">Data</Link>
             <a href="https://beadedcloud.com" target="_blank" rel="noopener noreferrer" className="hover:text-warm-white transition-colors">beadedcloud</a>
-            <a href="/#request-access" className="hover:text-warm-white transition-colors">Contact</a>
+            <Link href="/#request-access" className="hover:text-warm-white transition-colors">Contact</Link>
           </div>
           <p className="text-xs" style={{ color: "rgba(250,248,245,0.2)" }}>
             © 2026 Circumpolar.ai
