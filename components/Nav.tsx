@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 
@@ -8,7 +7,6 @@ const links = [
   { label: "How It Works", href: "/#how-it-works" },
   { label: "Industries", href: "/#industries" },
   { label: "Instrumentation", href: "/#instrumentation" },
-  { label: "ThawRisk", href: "/thawrisk" },
   { label: "Blog", href: "/blog" },
 ];
 
@@ -33,16 +31,16 @@ export default function Nav() {
           boxShadow: scrolled ? "0 4px 24px rgba(0,0,0,0.3)" : "none",
         }}
       >
-        <Link href="/" className="flex items-center gap-2">
+        <a href="/" className="flex items-center gap-2">
           <span className="text-xl">🧭</span>
           <span className="font-display text-lg font-normal" style={{ color: "#faf8f5" }}>
             Circumpolar<span style={{ color: "#00c471" }}>.ai</span>
           </span>
-        </Link>
+        </a>
 
         <div className="hidden md:flex items-center gap-7">
           {links.map((l) => (
-            <Link
+            <a
               key={l.href}
               href={l.href}
               className="text-sm transition-colors"
@@ -51,14 +49,14 @@ export default function Nav() {
               onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(250,248,245,0.65)")}
             >
               {l.label}
-            </Link>
+            </a>
           ))}
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link href="/#request-access" className="btn-primary text-sm py-2 px-5">
+          <a href="/#request-access" className="btn-primary text-sm py-2 px-5">
             Get Early Access
-          </Link>
+          </a>
         </div>
 
         <button
@@ -81,7 +79,7 @@ export default function Nav() {
           }}
         >
           {links.map((l) => (
-            <Link
+            <a
               key={l.href}
               href={l.href}
               className="text-sm py-2 px-3 rounded-xl transition-colors"
@@ -89,15 +87,15 @@ export default function Nav() {
               onClick={() => setOpen(false)}
             >
               {l.label}
-            </Link>
+            </a>
           ))}
-          <Link
+          <a
             href="/#request-access"
             className="btn-primary text-sm py-2.5 justify-center mt-1"
             onClick={() => setOpen(false)}
           >
             Get Early Access
-          </Link>
+          </a>
         </div>
       )}
     </nav>

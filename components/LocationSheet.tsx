@@ -25,34 +25,12 @@ function TypingIndicator() {
   );
 }
 
-const URL_SPLIT = /(https?:\/\/[^\s]+)/;
-
 function MessageContent({ content }: { content: string }) {
   return (
     <>
-      {content.split("\n").map((line, i, arr) => {
-        const parts = line.split(URL_SPLIT);
-        return (
-          <span key={i}>
-            {parts.map((part, j) =>
-              j % 2 === 1 ? (
-                <a
-                  key={j}
-                  href={part}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "#00c471", textDecoration: "underline", textUnderlineOffset: "2px" }}
-                >
-                  {part}
-                </a>
-              ) : (
-                <span key={j}>{part}</span>
-              )
-            )}
-            {i < arr.length - 1 && <br />}
-          </span>
-        );
-      })}
+      {content.split("\n").map((line, i, arr) => (
+        <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+      ))}
     </>
   );
 }
