@@ -11,8 +11,20 @@ export type PinnedLocation = {
   name?: string;
 };
 
-const CARTO_LIGHT =
-  "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
+const TERRAIN_STYLE = {
+  version: 8 as const,
+  sources: {
+    "esri-topo": {
+      type: "raster" as const,
+      tiles: [
+        "https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+      ],
+      tileSize: 256,
+      attribution: "Esri, HERE, Garmin, FAO, NOAA, USGS",
+    },
+  },
+  layers: [{ id: "esri-topo", type: "raster" as const, source: "esri-topo" }],
+};
 
 interface MapPickerProps {
   onPin: (location: PinnedLocation) => void;
@@ -60,7 +72,7 @@ export default function MapPicker({ onPin }: MapPickerProps) {
       <Map
         {...viewState}
         onMove={(e) => setViewState(e.viewState)}
-        mapStyle={CARTO_LIGHT}
+        mapStyle={TERRAIN_STYLE}
         style={{ width: "100%", height: "100%" }}
         onClick={handleClick}
         cursor="crosshair"
