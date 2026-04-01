@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 
@@ -32,29 +33,41 @@ export default function Nav() {
           boxShadow: scrolled ? "0 4px 24px rgba(0,0,0,0.3)" : "none",
         }}
       >
-        <a href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <span className="text-xl">🧭</span>
           <span className="font-display text-lg font-normal" style={{ color: "#faf8f5" }}>
             Circumpolar<span style={{ color: "#00c471" }}>.ai</span>
           </span>
-        </a>
+        </Link>
 
         <div className="hidden md:flex items-center gap-7">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              target={l.external ? "_blank" : undefined}
-              rel={l.external ? "noopener noreferrer" : undefined}
-              className="text-sm transition-colors"
-              style={{ color: "rgba(250,248,245,0.65)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#faf8f5")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(250,248,245,0.65)")}
-            >
-              {l.label}
-              {l.external && <span style={{ fontSize: "10px", opacity: 0.5 }}>↗</span>}
-            </a>
-          ))}
+          {links.map((l) =>
+            l.external ? (
+              <a
+                key={l.href}
+                href={l.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm transition-colors"
+                style={{ color: "rgba(250,248,245,0.65)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#faf8f5")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(250,248,245,0.65)")}
+              >
+                {l.label} <span style={{ fontSize: "10px", opacity: 0.5 }}>↗</span>
+              </a>
+            ) : (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="text-sm transition-colors"
+                style={{ color: "rgba(250,248,245,0.65)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#faf8f5")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(250,248,245,0.65)")}
+              >
+                {l.label}
+              </Link>
+            )
+          )}
         </div>
 
         <div className="hidden md:flex items-center gap-3">
@@ -66,9 +79,9 @@ export default function Nav() {
           >
             Login
           </a>
-          <a href="/#request-access" className="btn-primary text-sm py-2 px-5">
+          <Link href="/#request-access" className="btn-primary text-sm py-2 px-5">
             Get Early Access
-          </a>
+          </Link>
         </div>
 
         <button
@@ -90,26 +103,38 @@ export default function Nav() {
             border: "1px solid rgba(255,255,255,0.08)",
           }}
         >
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              target={l.external ? "_blank" : undefined}
-              rel={l.external ? "noopener noreferrer" : undefined}
-              className="text-sm py-2 px-3 rounded-xl transition-colors"
-              style={{ color: "rgba(250,248,245,0.7)" }}
-              onClick={() => setOpen(false)}
-            >
-              {l.label}
-            </a>
-          ))}
-          <a
+          {links.map((l) =>
+            l.external ? (
+              <a
+                key={l.href}
+                href={l.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm py-2 px-3 rounded-xl transition-colors"
+                style={{ color: "rgba(250,248,245,0.7)" }}
+                onClick={() => setOpen(false)}
+              >
+                {l.label} ↗
+              </a>
+            ) : (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="text-sm py-2 px-3 rounded-xl transition-colors"
+                style={{ color: "rgba(250,248,245,0.7)" }}
+                onClick={() => setOpen(false)}
+              >
+                {l.label}
+              </Link>
+            )
+          )}
+          <Link
             href="/#request-access"
             className="btn-primary text-sm py-2.5 justify-center mt-1"
             onClick={() => setOpen(false)}
           >
             Get Early Access
-          </a>
+          </Link>
         </div>
       )}
     </nav>
