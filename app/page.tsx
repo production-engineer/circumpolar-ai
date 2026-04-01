@@ -232,7 +232,7 @@ export default function Home() {
           </div>
 
           <p className="text-center text-xs mt-3" style={{ color: "rgba(250,248,245,0.3)" }}>
-            🐻 Click the map · Circe opens automatically with Arctic data for your pinned location
+            🐻‍❄️ Click the map · Circe opens automatically with Arctic data for your pinned location
           </p>
         </div>
       </section>
@@ -455,13 +455,8 @@ export default function Home() {
             ))}
           </div>
 
-          <a
-            href="https://beadedcloud.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-dark"
-          >
-            Visit beadedcloud.com <ArrowRight size={16} />
+          <a href="#request-access" className="btn-dark">
+            Get early access <ArrowRight size={16} />
           </a>
         </div>
       </section>
@@ -525,7 +520,7 @@ export default function Home() {
       {/* Early Access CTA — light */}
       <section id="request-access" className="py-24 px-4" style={{ background: "#f2eee7" }}>
         <div className="max-w-2xl mx-auto text-center">
-          <span className="text-4xl mb-4 block">🐻</span>
+          <span className="text-4xl mb-4 block">🐻‍❄️</span>
           <h2 className="font-display text-3xl sm:text-4xl mb-4" style={{ color: "#0a121f" }}>
             Get early access to Circumpolar
           </h2>

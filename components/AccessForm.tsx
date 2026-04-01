@@ -83,7 +83,8 @@ export default function AccessForm() {
         >
           <option value="">Industry</option>
           <option>Infrastructure / Construction</option>
-          <option>Mining / Oil & Gas</option>
+          <option>Mining</option>
+          <option>Oil & Gas</option>
           <option>Insurance / Finance</option>
           <option>Shipping / Maritime</option>
           <option>Government / Defense</option>

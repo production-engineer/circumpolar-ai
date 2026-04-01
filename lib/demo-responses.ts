@@ -32,27 +32,80 @@ function airTempRange(lat: number): string {
   return "–5°C to –15°C in winter, +12°C to +18°C in summer";
 }
 
+const SETTLEMENTS: { name: string; lat: number; lng: number; coverage: string }[] = [
+  { name: "Anchorage", lat: 61.22, lng: -149.90, coverage: "Full LTE/5G — multiple carriers" },
+  { name: "Fairbanks", lat: 64.84, lng: -147.72, coverage: "Full LTE — AT&T and GCI" },
+  { name: "Juneau", lat: 58.30, lng: -134.42, coverage: "Full LTE in the core" },
+  { name: "Nome", lat: 64.50, lng: -165.41, coverage: "GCI LTE in town, drops off sharply outside" },
+  { name: "Kotzebue", lat: 66.90, lng: -162.60, coverage: "GCI LTE in town center" },
+  { name: "Utqiaġvik", lat: 71.29, lng: -156.79, coverage: "GCI LTE in town — no signal outside" },
+  { name: "Bethel", lat: 60.79, lng: -161.76, coverage: "GCI LTE in town, surrounding tundra has none" },
+  { name: "Kodiak", lat: 57.79, lng: -152.41, coverage: "Full LTE in town" },
+  { name: "Yellowknife", lat: 62.45, lng: -114.37, coverage: "Full LTE — Bell, Rogers, Telus" },
+  { name: "Whitehorse", lat: 60.72, lng: -135.05, coverage: "Full LTE in city" },
+  { name: "Iqaluit", lat: 63.75, lng: -68.52, coverage: "Bell LTE in town — no coverage outside" },
+  { name: "Inuvik", lat: 68.36, lng: -133.72, coverage: "Bell LTE in town" },
+  { name: "Churchill", lat: 58.77, lng: -94.17, coverage: "Bell LTE in town" },
+  { name: "Tromsø", lat: 69.65, lng: 18.96, coverage: "Full 4G/5G — Telenor and Telia" },
+  { name: "Longyearbyen", lat: 78.22, lng: 15.65, coverage: "Telenor 4G in settlement only" },
+  { name: "Hammerfest", lat: 70.66, lng: 23.68, coverage: "Full 4G — Telenor" },
+  { name: "Murmansk", lat: 68.97, lng: 33.07, coverage: "Full LTE — MTS, Beeline, MegaFon" },
+  { name: "Norilsk", lat: 69.35, lng: 88.20, coverage: "LTE in city — dead zone beyond" },
+  { name: "Yakutsk", lat: 62.03, lng: 129.73, coverage: "Full LTE — MTS, Beeline, MegaFon" },
+  { name: "Nuuk", lat: 64.18, lng: -51.74, coverage: "TUSASS 4G in city" },
+  { name: "Reykjavik", lat: 64.13, lng: -21.82, coverage: "Full 4G/5G — Síminn, Vodafone IS" },
+];
+
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function nearestSettlement(lat: number, lng: number): { name: string; distKm: number; coverage: string } | null {
+  let nearest = null;
+  let minDist = Infinity;
+  for (const s of SETTLEMENTS) {
+    const d = haversineKm(lat, lng, s.lat, s.lng);
+    if (d < minDist) { minDist = d; nearest = s; }
+  }
+  if (!nearest) return null;
+  return { name: nearest.name, distKm: minDist, coverage: nearest.coverage };
+}
+
 function cellular(lat: number, lng: number): string {
   const ocLink = `https://opencellid.org/#zoom=10&lat=${lat.toFixed(4)}&lon=${lng.toFixed(4)}`;
+  const near = nearestSettlement(lat, lng);
+  if (near && near.distKm < 15)
+    return `You're within ${near.distKm.toFixed(1)} km of ${near.name}. ${near.coverage}. Signal strength will depend on which side of town you're on — check OpenCelliD for exact tower locations: ${ocLink}`;
+  if (near && near.distKm < 50)
+    return `You're ${near.distKm.toFixed(0)} km from ${near.name}. ${near.coverage}, but at this distance you're likely outside reliable range. Fringe signal possible on high ground. OpenCelliD: ${ocLink}`;
   if (lat >= 75)
-    return `Almost certainly no terrestrial towers within 10 miles. At this latitude, confirmed GSM infrastructure is 400+ km away. Iridium Certus or Starlink are the only reliable options. Verify at OpenCelliD: ${ocLink}`;
+    return `Almost certainly no terrestrial towers here. At this latitude, confirmed GSM infrastructure is 400+ km away. Iridium Certus or Starlink are your only options. Verify at OpenCelliD: ${ocLink}`;
   if (lat >= 68)
-    return `Unlikely to find towers within 10 miles unless you're near a coastal settlement. Coverage drops to zero within a few km of most communities. Check actual tower locations for these exact coordinates on OpenCelliD: ${ocLink}`;
+    return `Unlikely. Coverage exists only near coastal settlements and you're ${near ? `${near.distKm.toFixed(0)} km from ${near.name}` : "far from any known settlement"}. Check OpenCelliD: ${ocLink}`;
   if (lat >= 62)
-    return `Possible but not guaranteed. LTE towers exist near communities but rural areas have large gaps. Check the OpenCelliD map for your exact pin: ${ocLink} — zoom in to see confirmed tower locations and their reported range.`;
-  return `Coverage depends heavily on proximity to roads and settlements. Check OpenCelliD for confirmed tower locations within 10 miles of this pin: ${ocLink}`;
+    return `Unlikely at this distance from settlements. LTE towers exist near communities but coverage drops to zero within a few km. OpenCelliD: ${ocLink}`;
+  return `No signal expected here. Check OpenCelliD for confirmed tower locations: ${ocLink}`;
 }
 
 function cellularRadius(lat: number, lng: number, miles: number): string {
   const km = (miles * 1.609).toFixed(0);
   const ocLink = `https://opencellid.org/#zoom=11&lat=${lat.toFixed(4)}&lon=${lng.toFixed(4)}`;
+  const near = nearestSettlement(lat, lng);
+  if (near && near.distKm < miles * 1.609)
+    return `${near.name} is ${near.distKm.toFixed(1)} km away — well within your ${miles}-mile (${km} km) radius. ${near.coverage}. See exact tower locations: ${ocLink}`;
+  if (near && near.distKm < miles * 1.609 * 2)
+    return `${near.name} (${near.distKm.toFixed(0)} km away) is just outside your ${miles}-mile radius. ${near.coverage}, but fringe signal may reach your pin on clear terrain. OpenCelliD: ${ocLink}`;
   if (lat >= 75)
-    return `No towers within ${miles} miles (${km} km) at ${lat.toFixed(2)}°N. The nearest confirmed cellular infrastructure is typically 400+ km away at this latitude. Satellite is your only option — Starlink or Iridium Certus. See OpenCelliD: ${ocLink}`;
+    return `No towers within ${miles} miles (${km} km). Nearest infrastructure is 400+ km away. Satellite only — Starlink or Iridium Certus. OpenCelliD: ${ocLink}`;
   if (lat >= 68)
-    return `Unlikely. At ${lat.toFixed(2)}°N, towers exist only near coastal settlements. A ${miles}-mile radius in wilderness terrain will almost certainly return zero results. Verify on OpenCelliD: ${ocLink} — if there's nothing on that map, there's nothing on the ground.`;
-  if (lat >= 62)
-    return `Possibly. LTE infrastructure exists at this latitude but is concentrated near communities. Open OpenCelliD and check the ${miles}-mile circle around your pin: ${ocLink} — each dot is a registered tower with reported carrier and technology (2G/3G/LTE).`;
-  return `Check OpenCelliD for confirmed towers within ${miles} miles of ${lat.toFixed(3)}°N, ${lng.toFixed(3)}°E: ${ocLink} — zoom to your pin and look for tower dots within the radius you need.`;
+    return `Unlikely. Towers at this latitude exist only in settlements and you're ${near ? `${near.distKm.toFixed(0)} km from ${near.name}` : "isolated"}. Verify on OpenCelliD: ${ocLink}`;
+  return `Possibly, but check OpenCelliD to confirm: ${ocLink} — each dot is a registered tower with carrier and technology (2G/3G/LTE).`;
 }
 
 function constructionSuitability(lat: number): string {
