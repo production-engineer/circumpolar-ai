@@ -2,56 +2,75 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
 @layer base {
-  :root {
-    --background: #050d1a;
-    --foreground: #e8f4f8;
-  }
-
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    background-color: #050d1a;
-    color: #e8f4f8;
-    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #0a121f;
+    color: #faf8f5;
+    font-family: 'DM Sans', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
   * {
     box-sizing: border-box;
   }
+
+  h1, h2, h3 {
+    font-family: 'Instrument Serif', Georgia, serif;
+  }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-6 py-3 bg-aurora-blue text-arctic-950 font-semibold rounded-full transition-all duration-200 hover:bg-white hover:shadow-lg hover:shadow-aurora-blue/30 hover:-translate-y-0.5 active:translate-y-0;
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-aurora text-midnight font-semibold rounded-full transition-all duration-200 hover:bg-aurora-muted hover:shadow-lg hover:shadow-aurora/20 hover:-translate-y-0.5 active:translate-y-0;
   }
 
-  .btn-outline {
-    @apply inline-flex items-center gap-2 px-6 py-3 border border-arctic-600 text-ice font-medium rounded-full transition-all duration-200 hover:border-aurora-blue hover:text-aurora-blue hover:bg-arctic-800;
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-6 py-3 border border-white/20 text-warm-white font-medium rounded-full transition-all duration-200 hover:border-aurora hover:text-aurora hover:bg-white/5;
   }
 
-  .card {
-    @apply bg-arctic-900 border border-arctic-700 rounded-2xl p-6 transition-all duration-300 hover:border-arctic-500 hover:bg-arctic-800;
+  .btn-dark {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-midnight text-warm-white border border-white/10 font-semibold rounded-full transition-all duration-200 hover:border-aurora hover:text-aurora hover:-translate-y-0.5;
   }
 
-  .gradient-text {
-    @apply bg-gradient-to-r from-aurora-blue via-aurora-purple to-aurora-green bg-clip-text text-transparent;
+  .card-dark {
+    @apply bg-navy border border-white/[0.08] rounded-2xl p-6 transition-all duration-300 hover:border-aurora/30 hover:bg-navy-light;
   }
 
-  .section-label {
-    @apply text-sm font-semibold tracking-widest uppercase text-aurora-blue;
+  .card-light {
+    @apply bg-white border border-stone-dark rounded-2xl p-6 transition-all duration-300 hover:border-aurora/40 hover:shadow-md;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold tracking-widest uppercase text-aurora;
+  }
+
+  .section-dark {
+    @apply bg-midnight;
+  }
+
+  .section-navy {
+    @apply bg-navy;
+  }
+
+  .section-light {
+    @apply bg-warm-white;
+  }
+
+  .section-stone {
+    @apply bg-stone;
   }
 }
 
-/* Mapbox overrides */
-.mapboxgl-ctrl-logo { display: none !important; }
-.mapboxgl-ctrl-attrib { display: none !important; }
-.mapboxgl-map { border-radius: 16px; }
+/* MapLibre overrides */
+.maplibregl-ctrl-logo { display: none !important; }
+.maplibregl-ctrl-attrib { display: none !important; }
+.maplibregl-map { border-radius: 16px; }
 
 /* Chat scrollbar */
 .chat-scroll::-webkit-scrollbar {
@@ -61,17 +80,8 @@
   background: transparent;
 }
 .chat-scroll::-webkit-scrollbar-thumb {
-  background: #1a3a5c;
+  background: rgba(255,255,255,0.15);
   border-radius: 2px;
-}
-
-/* Aurora background effect */
-.aurora-bg {
-  background:
-    radial-gradient(ellipse 120% 60% at 50% -20%, rgba(56,189,248,0.15) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 40% at 80% 20%, rgba(168,85,247,0.1) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 30% at 20% 30%, rgba(74,222,128,0.08) 0%, transparent 50%),
-    #050d1a;
 }
 
 /* Typing indicator */

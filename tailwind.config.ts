@@ -9,53 +9,28 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        arctic: {
-          950: "#050d1a",
-          900: "#0a1628",
-          800: "#0f2040",
-          700: "#1a3a5c",
-          600: "#1e4976",
-          500: "#2563a8",
-          400: "#3b82c4",
-          300: "#60a5d4",
-          200: "#93c5e8",
-          100: "#dbeef7",
-        },
-        aurora: {
-          green: "#4ade80",
-          blue: "#38bdf8",
-          purple: "#a855f7",
-          pink: "#f472b6",
-        },
-        ice: "#e8f4f8",
+        aurora: "#00c471",
+        "aurora-muted": "#60bb83",
+        midnight: "#0a121f",
+        navy: "#162235",
+        "navy-light": "#2e3b50",
+        "warm-white": "#faf8f5",
+        "ice-light": "#d3e8f7",
+        stone: "#f2eee7",
+        "stone-dark": "#e3ddd3",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        display: ['"Instrument Serif"', "Georgia", "serif"],
+        body: ['"DM Sans"', "system-ui", "sans-serif"],
       },
       animation: {
-        "float": "float 3s ease-in-out infinite",
         "pulse-slow": "pulse 4s ease-in-out infinite",
-        "aurora": "aurora 8s ease-in-out infinite",
-        "slide-up": "slideUp 0.5s ease-out",
-        "fade-in": "fadeIn 0.6s ease-out",
+        float: "float 3s ease-in-out infinite",
       },
       keyframes: {
         float: {
           "0%, 100%": { transform: "translateY(0px)" },
           "50%": { transform: "translateY(-8px)" },
-        },
-        aurora: {
-          "0%, 100%": { opacity: "0.4", transform: "scaleX(1)" },
-          "50%": { opacity: "0.8", transform: "scaleX(1.05)" },
-        },
-        slideUp: {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
         },
       },
     },

@@ -12,54 +12,57 @@ function formatDate(iso: string) {
 
 export default function BlogPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" style={{ background: "#0a121f" }}>
       <Nav />
 
       <section className="pt-28 pb-12 px-4">
         <div className="max-w-4xl mx-auto">
           <a
             href="/"
-            className="inline-flex items-center gap-1 text-sm text-arctic-400 hover:text-ice transition-colors mb-8"
+            className="inline-flex items-center gap-1 text-sm mb-8 transition-colors"
+            style={{ color: "rgba(250,248,245,0.4)" }}
           >
             <ArrowLeft size={14} /> Back to home
           </a>
 
           <div className="mb-12">
-            <p className="section-label mb-3">Blog</p>
-            <h1 className="text-3xl sm:text-4xl font-bold text-ice">
+            <p className="eyebrow mb-3">Blog</p>
+            <h1 className="font-display text-3xl sm:text-4xl" style={{ color: "#faf8f5" }}>
               Arctic Intelligence, Explained
             </h1>
-            <p className="text-arctic-300 mt-3 max-w-xl">
-              Deep dives into permafrost, sea ice, Arctic connectivity, and the
-              data that drives decisions above 60°N.
+            <p className="mt-3 max-w-xl text-sm sm:text-base" style={{ color: "rgba(250,248,245,0.5)" }}>
+              Deep dives into permafrost, sea ice, Arctic connectivity, and the data that drives decisions above 60°N.
             </p>
           </div>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-5">
             {posts.map((post) => (
               <a
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="card flex flex-col sm:flex-row gap-5 group hover:no-underline"
+                className="card-dark flex flex-col sm:flex-row gap-5 group hover:no-underline"
               >
                 <div className="flex-1 flex flex-col gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-aurora-blue bg-arctic-700 px-2.5 py-1 rounded-full">
+                    <span
+                      className="text-xs font-semibold rounded-full px-2.5 py-1"
+                      style={{ background: "rgba(0,196,113,0.1)", color: "#00c471" }}
+                    >
                       {post.category}
                     </span>
-                    <span className="text-xs text-arctic-500">
+                    <span className="text-xs" style={{ color: "rgba(250,248,245,0.3)" }}>
                       {post.readTime} min read
                     </span>
                   </div>
-                  <h2 className="text-lg font-semibold text-ice group-hover:text-aurora-blue transition-colors leading-snug">
+                  <h2 className="font-display text-xl leading-snug transition-colors" style={{ color: "#faf8f5" }}>
                     {post.title}
                   </h2>
-                  <p className="text-arctic-300 text-sm leading-relaxed">
+                  <p className="text-sm leading-relaxed" style={{ color: "rgba(250,248,245,0.5)" }}>
                     {post.excerpt}
                   </p>
                   <div className="flex items-center justify-between mt-2">
-                    <p className="text-xs text-arctic-500">{formatDate(post.date)}</p>
-                    <span className="text-xs text-aurora-blue flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <p className="text-xs" style={{ color: "rgba(250,248,245,0.3)" }}>{formatDate(post.date)}</p>
+                    <span className="text-xs flex items-center gap-1" style={{ color: "#00c471" }}>
                       Read <ArrowRight size={12} />
                     </span>
                   </div>
@@ -70,15 +73,15 @@ export default function BlogPage() {
         </div>
       </section>
 
-      <footer className="border-t border-arctic-800 py-10 px-4 mt-12">
+      <footer className="py-10 px-4 mt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <a href="/" className="flex items-center gap-2">
-            <span className="text-2xl">🧭</span>
-            <span className="font-bold text-ice">
-              Circumpolar<span className="text-aurora-blue">.ai</span>
+            <span className="text-xl">🧭</span>
+            <span className="font-display text-base" style={{ color: "#faf8f5" }}>
+              Circumpolar<span style={{ color: "#00c471" }}>.ai</span>
             </span>
           </a>
-          <p className="text-xs text-arctic-600">© 2026 Circumpolar.ai</p>
+          <p className="text-xs" style={{ color: "rgba(250,248,245,0.2)" }}>© 2026 Circumpolar.ai</p>
         </div>
       </footer>
     </div>

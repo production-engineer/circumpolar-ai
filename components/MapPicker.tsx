@@ -1,15 +1,18 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
-import Map, { Marker, NavigationControl } from "react-map-gl";
-import { MapPin, Loader2 } from "lucide-react";
-import "mapbox-gl/dist/mapbox-gl.css";
+import { useCallback, useState } from "react";
+import Map, { Marker, NavigationControl } from "react-map-gl/maplibre";
+import { Loader2 } from "lucide-react";
+import "maplibre-gl/dist/maplibre-gl.css";
 
 export type PinnedLocation = {
   lat: number;
   lng: number;
   name?: string;
 };
+
+const CARTO_DARK =
+  "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
 
 interface MapPickerProps {
   onPin: (location: PinnedLocation) => void;
@@ -22,11 +25,9 @@ export default function MapPicker({ onPin }: MapPickerProps) {
     longitude: 15,
     latitude: 74,
     zoom: 2.5,
-    pitch: 20,
-    bearing: 0,
   });
 
-  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
   const handleClick = useCallback(
     async (e: { lngLat: { lat: number; lng: number } }) => {
@@ -34,14 +35,16 @@ export default function MapPicker({ onPin }: MapPickerProps) {
       setLoading(true);
 
       let name: string | undefined;
-      try {
-        const res = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,region,country&limit=1`
-        );
-        const data = await res.json();
-        name = data.features?.[0]?.place_name;
-      } catch {
-        // geocoding optional
+      if (mapboxToken) {
+        try {
+          const res = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxToken}&types=place,region,country&limit=1`
+          );
+          const data = await res.json();
+          name = data.features?.[0]?.place_name;
+        } catch {
+          // geocoding optional — coordinates always work
+        }
       }
 
       const location = { lat, lng, name };
@@ -49,77 +52,69 @@ export default function MapPicker({ onPin }: MapPickerProps) {
       setLoading(false);
       onPin(location);
     },
-    [token, onPin]
+    [mapboxToken, onPin]
   );
 
-  if (!token) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-arctic-900 rounded-2xl border border-arctic-700">
-        <p className="text-arctic-300 text-sm text-center px-6">
-          Add{" "}
-          <code className="text-aurora-blue">NEXT_PUBLIC_MAPBOX_TOKEN</code> to
-          your environment to enable the map.
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="relative w-full h-full rounded-2xl overflow-hidden border border-arctic-700 shadow-2xl shadow-arctic-950">
+    <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl" style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
       <Map
         {...viewState}
         onMove={(e) => setViewState(e.viewState)}
-        mapboxAccessToken={token}
+        mapStyle={CARTO_DARK}
         style={{ width: "100%", height: "100%" }}
-        mapStyle="mapbox://styles/mapbox/dark-v11"
-        projection={{ name: "globe" }}
         onClick={handleClick}
         cursor="crosshair"
-        fog={{
-          range: [0.8, 8],
-          color: "#0a1628",
-          "horizon-blend": 0.08,
-          "high-color": "#38bdf8",
-          "space-color": "#050d1a",
-          "star-intensity": 0.6,
-        }}
       >
         <NavigationControl position="bottom-right" showCompass={false} />
 
         {pin && (
           <Marker latitude={pin.lat} longitude={pin.lng} anchor="bottom">
-            <div className="flex flex-col items-center animate-slide-up">
-              <div className="bg-aurora-blue text-arctic-950 rounded-full p-1.5 shadow-lg shadow-aurora-blue/40">
-                <MapPin size={18} fill="currentColor" />
+            <div className="flex flex-col items-center">
+              <div
+                className="rounded-full p-1.5 shadow-lg"
+                style={{ background: "#00c471", color: "#0a121f" }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
               </div>
-              <div className="w-0.5 h-3 bg-aurora-blue/60" />
+              <div className="w-0.5 h-3" style={{ background: "rgba(0,196,113,0.6)" }} />
             </div>
           </Marker>
         )}
       </Map>
 
-      <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
-        <div className="bg-arctic-950/80 backdrop-blur-sm border border-arctic-700 rounded-xl px-3 py-2">
-          <p className="text-xs text-arctic-300">
+      <div className="absolute top-4 left-4 right-12 flex items-center gap-2 pointer-events-none">
+        <div
+          className="backdrop-blur-sm rounded-xl px-3 py-2"
+          style={{ background: "rgba(10,18,31,0.85)", border: "1px solid rgba(255,255,255,0.1)" }}
+        >
+          <p className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>
             {pin ? (
-              <span className="text-ice">
-                📍 {pin.name ?? `${pin.lat.toFixed(4)}°, ${pin.lng.toFixed(4)}°`}
+              <span style={{ color: "#faf8f5" }}>
+                {pin.name ?? `${pin.lat.toFixed(4)}°N, ${pin.lng.toFixed(4)}°E`}
               </span>
             ) : (
-              "Tap anywhere on the map to pin a location"
+              "Click anywhere on the Arctic to pin a location"
             )}
           </p>
         </div>
         {loading && (
-          <div className="bg-arctic-950/80 backdrop-blur-sm border border-arctic-700 rounded-xl p-2">
-            <Loader2 size={14} className="text-aurora-blue animate-spin" />
+          <div
+            className="backdrop-blur-sm rounded-xl p-2"
+            style={{ background: "rgba(10,18,31,0.85)", border: "1px solid rgba(255,255,255,0.1)" }}
+          >
+            <Loader2 size={14} className="animate-spin" style={{ color: "#00c471" }} />
           </div>
         )}
       </div>
 
       {pin && (
-        <div className="absolute bottom-14 left-4 bg-arctic-950/80 backdrop-blur-sm border border-arctic-700 rounded-xl px-3 py-1.5">
-          <p className="text-xs font-mono text-arctic-300">
+        <div
+          className="absolute bottom-14 left-4 backdrop-blur-sm rounded-xl px-3 py-1.5"
+          style={{ background: "rgba(10,18,31,0.85)", border: "1px solid rgba(255,255,255,0.1)" }}
+        >
+          <p className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>
             {pin.lat.toFixed(4)}°N &nbsp; {pin.lng.toFixed(4)}°E
           </p>
         </div>

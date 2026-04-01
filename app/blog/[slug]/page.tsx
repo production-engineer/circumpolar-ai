@@ -20,54 +20,60 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   if (!post) notFound();
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" style={{ background: "#0a121f" }}>
       <Nav />
 
       <article className="pt-28 pb-16 px-4">
         <div className="max-w-2xl mx-auto">
           <a
             href="/blog"
-            className="inline-flex items-center gap-1 text-sm text-arctic-400 hover:text-ice transition-colors mb-8"
+            className="inline-flex items-center gap-1 text-sm mb-8 transition-colors"
+            style={{ color: "rgba(250,248,245,0.4)" }}
           >
             <ArrowLeft size={14} /> All posts
           </a>
 
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-xs font-semibold text-aurora-blue bg-arctic-700 px-2.5 py-1 rounded-full">
+            <span
+              className="text-xs font-semibold rounded-full px-2.5 py-1"
+              style={{ background: "rgba(0,196,113,0.1)", color: "#00c471" }}
+            >
               {post.category}
             </span>
-            <span className="text-xs text-arctic-500">{post.readTime} min read</span>
+            <span className="text-xs" style={{ color: "rgba(250,248,245,0.3)" }}>{post.readTime} min read</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-bold text-ice leading-tight mb-4">
+          <h1 className="font-display text-3xl sm:text-4xl leading-tight mb-4" style={{ color: "#faf8f5" }}>
             {post.title}
           </h1>
 
-          <div className="flex items-center gap-2 text-sm text-arctic-400 mb-10 pb-8 border-b border-arctic-800">
-            <span>🐻‍❄️ {post.author}</span>
+          <div
+            className="flex items-center gap-2 text-sm mb-10 pb-8"
+            style={{ color: "rgba(250,248,245,0.4)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+          >
+            <span>🐻 {post.author}</span>
             <span>·</span>
             <span>{formatDate(post.date)}</span>
           </div>
 
-          <div className="prose-arctic">
-            <p className="text-arctic-200 text-lg leading-relaxed mb-6">
+          <div>
+            <p className="text-lg leading-relaxed mb-6" style={{ color: "rgba(250,248,245,0.8)" }}>
               {post.excerpt}
             </p>
 
-            <p className="text-arctic-300 leading-relaxed mb-6">
-              This article is part of the Circumpolar.ai research series. We're
-              actively publishing deep-dive content on Arctic data, risk, and
-              infrastructure. Sign up for early access to get new posts directly
-              in your inbox.
+            <p className="leading-relaxed mb-8" style={{ color: "rgba(250,248,245,0.55)" }}>
+              This article is part of the Circumpolar.ai research series. We're actively publishing deep-dive content on Arctic data, risk, and infrastructure. Sign up for early access to get new posts directly in your inbox.
             </p>
 
-            <div className="bg-arctic-900 border border-arctic-700 rounded-2xl p-6 flex flex-col gap-4">
-              <p className="text-sm font-semibold text-ice">
+            <div
+              className="rounded-2xl p-6 flex flex-col gap-4"
+              style={{ background: "#162235", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              <p className="text-sm font-semibold" style={{ color: "#faf8f5" }}>
                 Want to explore data for a specific location?
               </p>
-              <p className="text-sm text-arctic-300">
-                Try the Circumpolar map tool — pin any Arctic location and ask
-                Circe your questions directly.
+              <p className="text-sm" style={{ color: "rgba(250,248,245,0.55)" }}>
+                Try the Circumpolar map tool — pin any Arctic location and ask Circe your questions directly.
               </p>
               <a href="/#map-tool" className="btn-primary text-sm py-2.5 w-fit">
                 Open the map tool
@@ -77,15 +83,15 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         </div>
       </article>
 
-      <footer className="border-t border-arctic-800 py-10 px-4">
+      <footer className="py-10 px-4" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <a href="/" className="flex items-center gap-2">
-            <span className="text-2xl">🧭</span>
-            <span className="font-bold text-ice">
-              Circumpolar<span className="text-aurora-blue">.ai</span>
+            <span className="text-xl">🧭</span>
+            <span className="font-display text-base" style={{ color: "#faf8f5" }}>
+              Circumpolar<span style={{ color: "#00c471" }}>.ai</span>
             </span>
           </a>
-          <p className="text-xs text-arctic-600">© 2026 Circumpolar.ai</p>
+          <p className="text-xs" style={{ color: "rgba(250,248,245,0.2)" }}>© 2026 Circumpolar.ai</p>
         </div>
       </footer>
     </div>
