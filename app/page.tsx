@@ -408,6 +408,14 @@ export default function Home() {
             ))}
           </div>
 
+          <div className="rounded-2xl overflow-hidden mb-8" style={{ height: "360px" }}>
+            <img
+              src="/images/team-install.jpg"
+              alt="Beadedstream team installing thermistor strings and data logger in the Arctic tundra, helicopter in the background"
+              className="w-full h-full object-cover object-center"
+            />
+          </div>
+
           <div
             className="rounded-2xl p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6 justify-between"
             style={{ background: "rgba(0,196,113,0.07)", border: "1px solid rgba(0,196,113,0.18)" }}
@@ -432,32 +440,43 @@ export default function Home() {
 
       {/* Beadedcloud CTA — light */}
       <section className="py-24 px-4" style={{ background: "#faf8f5" }}>
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="eyebrow mb-4">Site monitoring</p>
-          <h2 className="font-display text-3xl sm:text-5xl mb-5" style={{ color: "#0a121f" }}>
-            From intelligence to action
-          </h2>
-          <p className="text-lg leading-relaxed mb-10 max-w-2xl mx-auto" style={{ color: "rgba(10,18,31,0.6)" }}>
-            Circumpolar gives you satellite and model data. When you're ready to monitor a specific building, pipeline, or embankment in real time, beadedcloud connects your site sensors and triggers alerts before damage occurs.
-          </p>
-
-          <div className="grid sm:grid-cols-3 gap-5 mb-10">
-            {[
-              { icon: "📡", title: "Any sensor", body: "Temperature probes, tiltmeters, crack gauges — beadedcloud ingests them all over LoRaWAN, Iridium, or LTE." },
-              { icon: "⚡", title: "Real-time alerts", body: "Threshold-based alerts go to your team via email or SMS the moment anomalous readings are detected." },
-              { icon: "📊", title: "Audit-ready logs", body: "Every reading is timestamped and stored. Regulators, insurers, and engineers all get the same data." },
-            ].map((f) => (
-              <div key={f.title} className="card-light text-left">
-                <span className="text-2xl mb-3 block">{f.icon}</span>
-                <h3 className="font-semibold mb-2" style={{ color: "#0a121f" }}>{f.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: "rgba(10,18,31,0.6)" }}>{f.body}</p>
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-12">
+            <div className="rounded-2xl overflow-hidden order-last lg:order-first" style={{ height: "460px" }}>
+              <img
+                src="/images/field-datalogger.jpg"
+                alt="Beadedstream project manager holding a D405 datalogger in the Arctic tundra, helicopter in the background"
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
+            <div>
+              <p className="eyebrow mb-4">Site monitoring</p>
+              <h2 className="font-display text-3xl sm:text-4xl mb-5" style={{ color: "#0a121f" }}>
+                From intelligence to action
+              </h2>
+              <p className="text-lg leading-relaxed mb-8" style={{ color: "rgba(10,18,31,0.6)" }}>
+                Circumpolar gives you satellite and model data. When you're ready to monitor a specific building, pipeline, or embankment in real time, beadedcloud connects your site sensors and triggers alerts before damage occurs.
+              </p>
+              <div className="flex flex-col gap-3 mb-8">
+                {[
+                  { icon: "📡", title: "Any sensor", body: "Temperature probes, tiltmeters, crack gauges — beadedcloud ingests them all over LoRaWAN, Iridium, or LTE." },
+                  { icon: "⚡", title: "Real-time alerts", body: "Threshold-based alerts go to your team via email or SMS the moment anomalous readings are detected." },
+                  { icon: "📊", title: "Audit-ready logs", body: "Every reading is timestamped and stored. Regulators, insurers, and engineers all get the same data." },
+                ].map((f) => (
+                  <div key={f.title} className="flex items-start gap-3">
+                    <span className="text-xl flex-shrink-0 mt-0.5">{f.icon}</span>
+                    <div>
+                      <p className="font-semibold text-sm mb-0.5" style={{ color: "#0a121f" }}>{f.title}</p>
+                      <p className="text-sm leading-relaxed" style={{ color: "rgba(10,18,31,0.6)" }}>{f.body}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+              <a href="#request-access" className="btn-dark">
+                Get early access <ArrowRight size={16} />
+              </a>
+            </div>
           </div>
-
-          <a href="#request-access" className="btn-dark">
-            Get early access <ArrowRight size={16} />
-          </a>
         </div>
       </section>
 
