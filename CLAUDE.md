@@ -31,22 +31,41 @@ This is not a ThawRisk feature. It's a separate product that may eventually abso
 
 ```
 app/
-  page.tsx              Landing page (hero, industries, data sources, blog, CTA form)
-  layout.tsx            HTML shell, metadata
-  globals.css           Tailwind base + custom utilities + Mapbox overrides
-  api/chat/route.ts     Streaming Claude API endpoint — edit system prompt here
+  page.tsx                          Landing page (hero, industries, data sources, blog, CTA form)
+  layout.tsx                        HTML shell, metadata
+  globals.css                       Tailwind base + custom utilities + Mapbox overrides
+  api/
+    auth/[...nextauth]/route.ts     NextAuth v5 handler (Google + GitHub)
+    proposals/[id]/accept/route.ts  POST — record acceptance, send email via Resend
   blog/
-    page.tsx            Blog listing
-    [slug]/page.tsx     Blog post (static, links back to map tool)
+    page.tsx                        Blog listing
+    [slug]/page.tsx                 Blog post
+  proposals/
+    [id]/page.tsx                   Proposal viewer + accept panel
+  signin/
+    page.tsx                        Sign-in page (Google + GitHub buttons)
+
+auth.ts                             NextAuth v5 config — providers, session callback
+middleware.ts                       (future) protect admin routes
 
 components/
   Nav.tsx               Top nav (pill style, mobile menu)
   HeroMap.tsx           Client wrapper: mounts MapPicker + CirceChat together
   MapPicker.tsx         Mapbox map — click to pin, reverse geocodes via Mapbox API
   CirceChat.tsx         Circe chat widget — streaming messages, suggested questions
+  AcceptProposal.tsx    Client component — sign-in gate + acceptance form
+  SessionProvider.tsx   Thin wrapper around NextAuth SessionProvider
 
 lib/
   blog-posts.ts         5 static blog posts (expand here, no CMS yet)
+  proposals.ts          Proposal data + getProposal() / listProposals()
+
+proposals/
+  fde-beadedstream-2026-04.html     Printable PDF version of the FDE proposal
+
+public/
+  roi-calculator.html               ThawRisk permafrost monitoring ROI calculator (standalone HTML tool)
+  signup-sheet.gs                   Google Apps Script — paste into a Sheet to capture ROI tool sign-ups + email erik@beaded.cloud
 
 docs/
   decisions/
@@ -57,17 +76,24 @@ docs/
 
 ## Environment Variables
 
-Create `.env.local` (never commit it):
+Create `.env.local` (never commit it — copy from `.env.example`):
 
 ```
-NEXT_PUBLIC_MAPBOX_TOKEN=pk.your_token_here
-ANTHROPIC_API_KEY=sk-ant-your_key_here
+NEXT_PUBLIC_MAPBOX_TOKEN=   # https://account.mapbox.com
+ANTHROPIC_API_KEY=          # https://console.anthropic.com
+AUTH_SECRET=                # npx node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+AUTH_GITHUB_ID=             # https://github.com/settings/developers
+AUTH_GITHUB_SECRET=
+AUTH_GOOGLE_ID=             # https://console.cloud.google.com/apis/credentials
+AUTH_GOOGLE_SECRET=
+RESEND_API_KEY=             # https://resend.com/api-keys (optional — emails won't send without it)
 ```
 
-- **Mapbox token:** https://account.mapbox.com — free tier is fine (50k loads/month)
-- **Anthropic key:** https://console.anthropic.com
+OAuth callback URLs for local dev:
+- GitHub: `http://localhost:3000/api/auth/callback/github`
+- Google: `http://localhost:3000/api/auth/callback/google`
 
-If `NEXT_PUBLIC_MAPBOX_TOKEN` is absent, the map shows a fallback message. The rest of the page still renders.
+If `NEXT_PUBLIC_MAPBOX_TOKEN` is absent, the map shows a fallback. Auth works without Resend — acceptance emails are just skipped.
 
 ---
 
@@ -86,9 +112,11 @@ App runs at http://localhost:3000.
 
 ## Deployment
 
-Not yet deployed. Platform is unspecified — the app is standard Next.js with no platform-specific APIs. Any host that runs Node 20+ works (Vercel, Fly.io, Railway, Render, etc.).
+Not yet deployed. This is a server-rendered Next.js app (no longer static export). Vercel is the natural choice — the `vercel.json` is already in place.
 
-Required env vars on the host: `NEXT_PUBLIC_MAPBOX_TOKEN`, `ANTHROPIC_API_KEY`.
+Required env vars on the host: all vars from `.env.example`. Update OAuth callback URLs to the production domain.
+
+**Was:** GitHub Pages static export (`output: "export"`). Removed to support auth + API routes.
 
 ---
 
