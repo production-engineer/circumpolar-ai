@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forward Deployed Engineer — Beadedstream · Circumpolar.ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --aurora: #00c471;
+      --bc-blue: #07559B;
+      --midnight: #0a121f;
+      --paper: #f2eee7;
+      --paper-dark: #d8c8b8;
+      --text: #1a1a2e;
+      --muted: #5a6a7a;
+      --bg: #f2eee7;
+    }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 48px 64px;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--midnight);
+      margin-bottom: 36px;
+    }
+
+    .brands {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-circumpolar {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 21px;
+      color: var(--midnight);
+    }
+
+    .brand-circumpolar span { color: var(--aurora); }
+
+    .brand-sep {
+      font-size: 16px;
+      color: #b8b0a4;
+    }
+
+    .brand-beadedstream {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 21px;
+      color: var(--bc-blue);
+    }
+
+    .proposal-meta {
+      text-align: right;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .proposal-meta strong {
+      display: block;
+      font-size: 14px;
+      color: var(--midnight);
+      margin-bottom: 2px;
+    }
+
+    /* ── Parties ── */
+    .parties {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 36px;
+    }
+
+    .party-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .party-label.from { color: var(--aurora); }
+    .party-label.to   { color: var(--bc-blue); }
+
+    .party-name {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 20px;
+      color: var(--midnight);
+      margin-bottom: 4px;
+    }
+
+    .party-detail {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── Title block ── */
+    .proposal-title {
+      background: var(--midnight);
+      color: #fff;
+      border-radius: 10px;
+      padding: 28px 32px;
+      margin-bottom: 36px;
+    }
+
+    .proposal-title h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    .proposal-title .tagline {
+      font-size: 15px;
+      color: #94b3c4;
+      max-width: 520px;
+      line-height: 1.65;
+    }
+
+    .price-badge {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-top: 18px;
+      background: var(--aurora);
+      color: var(--midnight);
+      border-radius: 8px;
+      padding: 8px 16px;
+    }
+
+    .price-badge .amount {
+      font-size: 24px;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+    }
+
+    .price-badge .period {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* ── Section headers ── */
+    h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 19px;
+      font-weight: 400;
+      color: var(--midnight);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--paper-dark);
+    }
+
+    section {
+      margin-bottom: 36px;
+    }
+
+    /* ── Summary ── */
+    .summary p {
+      font-size: 15px;
+      color: #2e3a48;
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
+
+    /* ── Deliverables ── */
+    .deliverable {
+      display: flex;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--paper-dark);
+    }
+
+    .deliverable:last-child {
+      border-bottom: none;
+    }
+
+    .deliverable-num {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      background: white;
+      border: 1px solid var(--paper-dark);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .deliverable-body h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--midnight);
+      margin-bottom: 5px;
+    }
+
+    .deliverable-body p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .deliverable-body .outcome {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--bc-blue);
+      font-weight: 500;
+    }
+
+    /* ── Out of scope ── */
+    .out-of-scope {
+      background: white;
+      border: 1px solid var(--paper-dark);
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+
+    .out-of-scope ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 24px;
+    }
+
+    .out-of-scope ul li {
+      font-size: 14px;
+      color: var(--muted);
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .out-of-scope ul li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+    }
+
+    /* ── Terms link ── */
+    .terms-link {
+      font-size: 15px;
+      color: #2e3a48;
+      line-height: 1.7;
+    }
+
+    .terms-link a {
+      color: var(--bc-blue);
+    }
+
+    /* ── Signature block ── */
+    .signature-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 8px;
+    }
+
+    .signee {
+      border-top: 1.5px solid var(--midnight);
+      padding-top: 10px;
+    }
+
+    .signee-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--midnight);
+    }
+
+    .signee-role {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .sig-line {
+      height: 1px;
+      background: var(--paper-dark);
+      margin: 18px 0 6px;
+      width: 70%;
+    }
+
+    .sig-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid var(--paper-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: #f2eee7; padding: 24px 32px 40px; }
+      @page { margin: 0.6in; background: #f2eee7; }
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 24px 20px 48px; font-size: 15px; }
+      .parties { grid-template-columns: 1fr; gap: 20px; }
+      .out-of-scope ul { grid-template-columns: 1fr; }
+      .signature-block { grid-template-columns: 1fr; }
+      .brands { gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="brands">
+      <span class="brand-circumpolar">circumpolar<span>.ai</span></span>
+      <span class="brand-sep">×</span>
+      <span class="brand-beadedstream">beadedstream</span>
+    </div>
+    <div class="proposal-meta">
+      <strong>Proposal #2026-FDE-001</strong>
+      Issued: April 2, 2026<br />
+      Valid until: May 2, 2026
+    </div>
+  </header>
+
+  <div class="parties">
+    <div>
+      <div class="party-label from">From</div>
+      <div class="party-name">Circumpolar.ai</div>
+      <div class="party-detail">
+        Erik Williams<br />
+        erik@beaded.cloud<br />
+        Anchorage, Alaska
+      </div>
+    </div>
+    <div>
+      <div class="party-label to">Prepared for</div>
+      <div class="party-name">Beadedstream</div>
+      <div class="party-detail">
+        Arctic permafrost monitoring hardware
+      </div>
+    </div>
+  </div>
+
+  <div class="proposal-title">
+    <h1>Forward Deployed Engineer</h1>
+    <p class="tagline">A dedicated integration engineer embedded in your product workflow — reducing operational overhead and building toward a more automated, connected stack.</p>
+    <div class="price-badge">
+      <span class="amount">$1,000</span>
+      <span class="period">/ month</span>
+    </div>
+  </div>
+
+  <section class="summary">
+    <h2>The opportunity</h2>
+    <p>Beadedstream can significantly improve operational efficiency through more automation. Right now, a lot of data tracking and order management happens manually — it's a source of friction, errors, and staff time that doesn't need to be spent that way.</p>
+    <p>This engagement embeds a dedicated engineer into your workflow to make your existing apps talk to each other, reduce the manual steps between them, and progressively automate the processes that slow your team down.</p>
+    <p>One example of where this is heading: an AI agent inside ERPNext that can answer questions about orders, customers, and inventory — with source documents linked — using a RAG model against your own data. That's the direction. The work below is how we get there.</p>
+  </section>
+
+  <section>
+    <h2>Work areas</h2>
+
+    <div class="deliverable">
+      <div class="deliverable-num">01</div>
+      <div class="deliverable-body">
+        <h3>Factory App</h3>
+        <p>Ongoing integration work connecting the factory application to downstream systems. Production logs, serial numbers, and quality records should flow automatically — the goal is reducing manual data entry between stations over time.</p>
+        <span class="outcome">Less manual tracking; more automatic handoffs between factory and record systems</span>
+      </div>
+    </div>
+
+    <div class="deliverable">
+      <div class="deliverable-num">02</div>
+      <div class="deliverable-body">
+        <h3>Cable Builder — customer-facing UI</h3>
+        <p>Iterative development of the ward-facing cable configurator. Customers should be able to spec thermistor cable layouts (sensor spacing, depth, connector type) and submit structured orders instead of relying on email threads.</p>
+        <span class="outcome">Structured order intake that keeps improving as edge cases get handled</span>
+      </div>
+    </div>
+
+    <div class="deliverable">
+      <div class="deliverable-num">03</div>
+      <div class="deliverable-body">
+        <h3>Shop page → ERPNext</h3>
+        <p>Ongoing work to keep the e-commerce shop and ERPNext in sync — sales orders, inventory, and customer records. Integration points are rarely fully done; this keeps them healthy and extends them as the shop evolves.</p>
+        <span class="outcome">Orders flowing into ERPNext reliably, with fewer manual steps over time</span>
+      </div>
+    </div>
+
+    <div class="deliverable">
+      <div class="deliverable-num">04</div>
+      <div class="deliverable-body">
+        <h3>Capture App</h3>
+        <p>Continuous improvement of the field data capture app's connection to the central platform and ERPNext. Field readings should sync without manual uploads or human steps — and the integration should hold up through app updates on both sides.</p>
+        <span class="outcome">Reliable field-to-platform sync that doesn't require babysitting</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Out of scope</h2>
+    <div class="out-of-scope">
+      <ul>
+        <li>New product features outside integration work</li>
+        <li>ERPNext module setup or configuration</li>
+        <li>Hardware or firmware work</li>
+        <li>On-site visits</li>
+        <li>Server or infrastructure provisioning</li>
+        <li>Customer support or end-user training</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Terms &amp; conditions</h2>
+    <p class="terms-link">
+      The full terms and conditions for this engagement are available at:<br />
+      <a href="https://docs.google.com/document/d/1Qg8VXzha_YfL9YB1uU6WSXoOQNTe7Ef9P8MxvDwsD8Y/edit?tab=t.0#heading=h.gxt8zfy2vr1i">
+        Terms &amp; Conditions (Google Docs) →
+      </a>
+    </p>
+  </section>
+
+  <section>
+    <h2>Agreement</h2>
+    <p style="font-size: 15px; color: var(--muted); margin-bottom: 24px; line-height: 1.7;">
+      By signing below, both parties agree to the scope and terms referenced in this proposal. This document, together with the Terms &amp; Conditions linked above, constitutes the full agreement for the services described.
+    </p>
+    <div class="signature-block">
+      <div class="signee">
+        <div class="signee-name">Erik Williams</div>
+        <div class="signee-role">Circumpolar.ai — Service Provider</div>
+        <div class="sig-line"></div>
+        <div class="sig-label">Signature &nbsp;/&nbsp; Date</div>
+      </div>
+      <div class="signee">
+        <div class="signee-name">Beadedstream</div>
+        <div class="signee-role">Client — Authorized Representative</div>
+        <div class="sig-line"></div>
+        <div class="sig-label">Signature &nbsp;/&nbsp; Date</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>Proposal #2026-FDE-001 · circumpolar.ai × beadedstream</span>
+    <span>Questions: erik@beaded.cloud</span>
+  </footer>
+
+</body>
+</html>

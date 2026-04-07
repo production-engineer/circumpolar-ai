@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Nav from "@/components/Nav";
 import { posts } from "@/lib/blog-posts";
@@ -17,13 +18,13 @@ export default function BlogPage() {
 
       <section className="pt-28 pb-12 px-4">
         <div className="max-w-4xl mx-auto">
-          <a
+          <Link
             href="/"
             className="inline-flex items-center gap-1 text-sm mb-8 transition-colors"
             style={{ color: "rgba(250,248,245,0.4)" }}
           >
             <ArrowLeft size={14} /> Back to home
-          </a>
+          </Link>
 
           <div className="mb-12">
             <p className="eyebrow mb-3">Blog</p>
@@ -37,7 +38,7 @@ export default function BlogPage() {
 
           <div className="flex flex-col gap-5">
             {posts.map((post) => (
-              <a
+              <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
                 className="card-dark flex flex-col sm:flex-row gap-5 group hover:no-underline"
@@ -67,7 +68,7 @@ export default function BlogPage() {
                     </span>
                   </div>
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -75,12 +76,12 @@ export default function BlogPage() {
 
       <footer className="py-10 px-4 mt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <span className="text-xl">🧭</span>
             <span className="font-display text-base" style={{ color: "#faf8f5" }}>
               Circumpolar<span style={{ color: "#00c471" }}>.ai</span>
             </span>
-          </a>
+          </Link>
           <p className="text-xs" style={{ color: "rgba(250,248,245,0.2)" }}>© 2026 Circumpolar.ai</p>
         </div>
       </footer>
