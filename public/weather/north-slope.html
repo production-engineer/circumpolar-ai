@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>North Slope, AK — Live Weather · Circumpolar.ai</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0a121f;
+    color: #faf8f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: #162235;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pin { font-size: 22px; }
+  .location-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #faf8f5;
+    line-height: 1.2;
+  }
+  .coords {
+    font-size: 12px;
+    color: rgba(250,248,245,0.4);
+    margin-top: 2px;
+  }
+  .home-link {
+    font-size: 12px;
+    color: #00c471;
+    text-decoration: none;
+    background: rgba(0,196,113,0.1);
+    border: 1px solid rgba(0,196,113,0.2);
+    border-radius: 10px;
+    padding: 6px 12px;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .home-link:hover { background: rgba(0,196,113,0.18); }
+
+  main {
+    flex: 1;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 32px 20px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(250,248,245,0.35);
+    margin-bottom: 12px;
+  }
+
+  .windy-wrap {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.07);
+    background: #162235;
+  }
+  .windy-wrap iframe {
+    display: block;
+    width: 100%;
+    height: 520px;
+    border: none;
+  }
+
+  .windy-footer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: rgba(250,248,245,0.25);
+  }
+  .windy-footer a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .windy-footer a:hover { text-decoration: underline; }
+
+  .context-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .context-card {
+    background: #162235;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .context-card .label {
+    font-size: 11px;
+    color: rgba(250,248,245,0.4);
+    margin-bottom: 4px;
+  }
+  .context-card .value {
+    font-size: 15px;
+    font-weight: 600;
+    color: #faf8f5;
+  }
+  .context-card .sub {
+    font-size: 12px;
+    color: rgba(250,248,245,0.45);
+    margin-top: 2px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: rgba(250,248,245,0.2);
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  footer a { color: inherit; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="pin">📍</span>
+    <div>
+      <div class="location-name">North Slope, Alaska</div>
+      <div class="coords">70.2°N, 148.5°W · Arctic Coastal Plain</div>
+    </div>
+  </div>
+  <a href="https://circumpolar.ai" class="home-link">🐻‍❄️ Circumpolar.ai ↗</a>
+</header>
+
+<main>
+
+  <div class="context-grid">
+    <div class="context-card">
+      <div class="label">Region</div>
+      <div class="value">North Slope Borough</div>
+      <div class="sub">Alaska, USA</div>
+    </div>
+    <div class="context-card">
+      <div class="label">Permafrost</div>
+      <div class="value">Continuous</div>
+      <div class="sub">Active layer 30–60 cm</div>
+    </div>
+    <div class="context-card">
+      <div class="label">Infrastructure</div>
+      <div class="value">Prudhoe Bay</div>
+      <div class="sub">O&G, pipelines, gravel roads</div>
+    </div>
+    <div class="context-card">
+      <div class="label">Risk Window</div>
+      <div class="value">Jun–Sep</div>
+      <div class="sub">Peak thaw season</div>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-label">Live Weather &amp; Forecast</div>
+    <div class="windy-wrap">
+      <iframe
+        src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=7&overlay=wind&product=ecmwf&level=surface&lat=70.2&lon=-148.5&detailLat=70.2&detailLon=-148.5&detail=true&message=true&marker=true&pressure=true&calendar=now"
+        title="Live wind and weather forecast — North Slope, AK"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <div class="windy-footer">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Full forecast at <a href="https://windy.com/?70.2,-148.5,7" target="_blank" rel="noopener noreferrer">windy.com</a>
+      &nbsp;·&nbsp; Data: ECMWF
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <a href="https://circumpolar.ai">🐻‍❄️ Circumpolar.ai</a> — Arctic intelligence for infrastructure teams
+</footer>
+
+</body>
+</html>
