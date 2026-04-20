@@ -197,31 +197,30 @@ export default function Home() {
         />
 
         <div className="max-w-6xl mx-auto relative">
-          <div className="text-center mb-10">
-            <div
-              className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-6"
-              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
-            >
-              <span className="w-2 h-2 rounded-full bg-aurora animate-pulse" />
-              <span className="text-xs font-medium" style={{ color: "rgba(250,248,245,0.7)" }}>
-                Early Access Open — Arctic Intelligence Platform
-              </span>
+          <div className="text-center mb-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-4">
+              <div
+                className="inline-flex items-center gap-2 rounded-full px-3 py-1.5"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-aurora animate-pulse" />
+                <span className="text-xs font-medium" style={{ color: "rgba(250,248,245,0.7)" }}>
+                  Early Access Open
+                </span>
+              </div>
             </div>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl leading-tight mb-5" style={{ color: "#faf8f5" }}>
+            <h1 className="font-display text-3xl sm:text-4xl leading-tight mb-3" style={{ color: "#faf8f5" }}>
               Arctic intelligence{" "}
               <em className="not-italic" style={{ color: "#00c471" }}>at your fingertips</em>
             </h1>
 
-            <p className="text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed mb-8" style={{ color: "rgba(250,248,245,0.65)" }}>
-              Pin any location above 60°N. Ask our AI assistant anything — permafrost risk, sea ice, weather, cellular coverage, terrain. Get answers backed by 8+ public datasets in seconds.
+            <p className="text-sm sm:text-base max-w-xl mx-auto leading-relaxed mb-5" style={{ color: "rgba(250,248,245,0.55)" }}>
+              Pin any location. Ask Circe about permafrost, weather, sea ice, cellular coverage, and terrain — backed by 8+ public datasets.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <a href="#map-tool" className="btn-primary">
-                Try the map <ArrowRight size={16} />
-              </a>
-              <a href="#request-access" className="btn-ghost">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+              <a href="#request-access" className="btn-ghost text-sm py-2">
                 Request early access
               </a>
             </div>
@@ -232,7 +231,7 @@ export default function Home() {
           </div>
 
           <p className="text-center text-xs mt-3" style={{ color: "rgba(250,248,245,0.3)" }}>
-            🐻‍❄️ Click the map · Circe opens automatically with Arctic data for your pinned location
+            🐻‍❄️ Click the map · Ask Circe anything about your pinned location
           </p>
         </div>
       </section>

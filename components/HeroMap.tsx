@@ -5,15 +5,13 @@ import dynamic from "next/dynamic";
 import type { PinnedLocation } from "./MapPicker";
 
 const MapPicker = dynamic(() => import("./MapPicker"), { ssr: false });
-const LocationSheet = dynamic(() => import("./LocationSheet"), { ssr: false });
+const CirceChat = dynamic(() => import("./CirceChat"), { ssr: false });
 
 export default function HeroMap() {
   const [location, setLocation] = useState<PinnedLocation | null>(null);
-  const [sheetOpen, setSheetOpen] = useState(false);
 
   const handlePin = (loc: PinnedLocation) => {
     setLocation(loc);
-    setSheetOpen(true);
   };
 
   return (
@@ -45,9 +43,7 @@ export default function HeroMap() {
         )}
       </div>
 
-      {sheetOpen && (
-        <LocationSheet location={location} onClose={() => setSheetOpen(false)} />
-      )}
+      <CirceChat location={location} />
     </>
   );
 }

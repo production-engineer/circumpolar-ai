@@ -9,7 +9,7 @@ const links = [
   { label: "Industries", href: "/#industries" },
   { label: "Instrumentation", href: "/#instrumentation" },
   { label: "Blog", href: "/blog" },
-  { label: "ROI Calculator", href: "/circumpolar-ai/roi-calculator.html", external: true },
+  { label: "ROI Calculator", href: "/roi-calculator.html", external: true },
 ];
 
 export default function Nav() {
